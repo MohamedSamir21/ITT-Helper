@@ -1,6 +1,5 @@
 package com.example.itthelper.authentication.presentation.welcome
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,7 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
@@ -25,7 +26,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.itthelper.R
 import com.example.itthelper.authentication.presentation.util.OnBoardingPage
 import kotlinx.coroutines.launch
@@ -42,15 +46,17 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WelcomeScreen() {
-    val pages = listOf(
-        OnBoardingPage.First,
-        OnBoardingPage.Second,
-        OnBoardingPage.Third
-    )
+    val vm: WelcomeViewModel = viewModel()
+    val state = vm.state
 
-    Log.i("WelcomeScreen", "created")
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { currentPageIndex ->
+            vm.updateCurrentPageIndex(currentPageIndex)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -61,10 +67,10 @@ fun WelcomeScreen() {
             state = pagerState,
             modifier = Modifier
                 .weight(.8f),
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.Bottom,
         ) {
             PagerScreen(
-                onBoardingPage = pages[it],
+                onBoardingPage = state.value.onBoardingPages[it],
                 modifier = Modifier
                     .padding(10.dp)
                     .fillMaxWidth()
@@ -73,16 +79,22 @@ fun WelcomeScreen() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
                 .weight(.2f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             SkipButton()
-            CircularIndicator(pagerState)
-            NextButton{
+            CircularPagerIndicator(
+                pagerState = pagerState,
+                indicatorCirclesColors = state.value.indicatorCirclesColors
+            ) {
+                vm.updateIndicatorCirclesColors(it)
+            }
+            NextButton {
+                // Improve Coroutine creation here..
                 scope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    vm.increaseCurrentPageIndex(pagerState.currentPage)
+                    pagerState.animateScrollToPage(state.value.currentPageIndex)
                 }
             }
         }
@@ -117,7 +129,9 @@ fun PagerScreen(
             text = onBoardingPage.description,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxHeight(.2f)
+            modifier = Modifier
+                .fillMaxHeight(.5f)
+                .verticalScroll(rememberScrollState())
         )
     }
 }
@@ -145,23 +159,37 @@ fun NextButton(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CircularIndicator(
+fun CircularPagerIndicator(
+    modifier: Modifier = Modifier,
     pagerState: PagerState,
-    modifier: Modifier = Modifier
+    indicatorCirclesColors: List<IndicatorCircleColor>,
+    onDrawCircles: (Int) -> Unit
 ) {
-    Box(modifier = modifier.padding(10.dp)){
+    Box(modifier = modifier.padding(10.dp)) {
         Row {
+            val currentPageIndex = pagerState.currentPage
+            LaunchedEffect(currentPageIndex) {
+                onDrawCircles(currentPageIndex)
+            }
             repeat(pagerState.pageCount) { iteration ->
-                val color =
-                    if (pagerState.currentPage == iteration) Color.Green else Color.LightGray
-                Box(
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .size(10.dp)
+                IndicatorCircle(
+                    color = indicatorCirclesColors[iteration].color
                 )
             }
         }
     }
+}
+
+@Composable
+fun IndicatorCircle(
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .padding(2.dp)
+            .clip(CircleShape)
+            .background(color)
+            .size(10.dp)
+    )
 }
