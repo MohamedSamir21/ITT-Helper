@@ -23,7 +23,7 @@ sealed class OnBoardingPage(
 
     object Third: OnBoardingPage(
         image = R.drawable.educational_resources,
-        title = "Success",
+        title = "Educational resources",
         description = "Providing access to educational resources, workshops, and skill-building opportunities provides them with the tools to succeed"
     )
 }
