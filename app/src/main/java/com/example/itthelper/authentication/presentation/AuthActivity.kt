@@ -14,14 +14,14 @@ class AuthActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ITTHelperTheme {
-                AuthScreens()
+                AuthFeature()
             }
         }
     }
 }
 
 @Composable
-fun AuthScreens() {
+fun AuthFeature() {
     val navController = rememberNavController()
     SetupNavGraph(
         navController = navController,
