@@ -1,12 +1,12 @@
 package com.example.itthelper.authentication.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import com.example.itthelper.authentication.presentation.welcome.WelcomeScreen
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.rememberNavController
+import com.example.itthelper.authentication.presentation.navigation.Screen
+import com.example.itthelper.authentication.presentation.navigation.SetupNavGraph
 import com.example.itthelper.ui.theme.ITTHelperTheme
 
 class AuthActivity: ComponentActivity() {
@@ -14,9 +14,17 @@ class AuthActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ITTHelperTheme {
-                Log.i("MainActivity", "created")
-                WelcomeScreen()
+                AuthScreens()
             }
         }
     }
+}
+
+@Composable
+fun AuthScreens() {
+    val navController = rememberNavController()
+    SetupNavGraph(
+        navController = navController,
+        startDestination = Screen.WELCOME.route
+    )
 }
