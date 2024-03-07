@@ -38,23 +38,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.itthelper.R
+import com.example.itthelper.authentication.presentation.navigation.Screen
 import com.example.itthelper.authentication.presentation.util.OnBoardingPage
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WelcomeScreen() {
-    val vm: WelcomeViewModel = viewModel()
-    val state = vm.state
+fun WelcomeScreen(
+    navController: NavHostController,
+    viewModel: WelcomeViewModel
+) {
+    val state = viewModel.state
 
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { currentPageIndex ->
-            vm.updateCurrentPageIndex(currentPageIndex)
+            viewModel.updateCurrentPageIndex(currentPageIndex)
         }
     }
 
@@ -83,18 +86,30 @@ fun WelcomeScreen() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            SkipButton()
+            val isNotLastPage = !state.value.isLastPage
+            if (isNotLastPage)
+                SkipButton {
+                    navController.popBackStack()
+                    navController.navigate(
+                        route = Screen.AUTH.route
+                    )
+                }
             CircularPagerIndicator(
                 pagerState = pagerState,
                 indicatorCirclesColors = state.value.indicatorCirclesColors
             ) {
-                vm.updateIndicatorCirclesColors(it)
+                viewModel.updateIndicatorCirclesColors(it)
             }
             NextButton {
                 // Improve Coroutine creation here..
                 scope.launch {
-                    vm.increaseCurrentPageIndex(pagerState.currentPage)
-                    pagerState.animateScrollToPage(state.value.currentPageIndex)
+                    if (state.value.isLastPage) {
+                        navController.popBackStack()
+                        navController.navigate(Screen.AUTH.route)
+                    } else {
+                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        viewModel.updateCurrentPageIndex(pagerState.currentPage)
+                    }
                 }
             }
         }
