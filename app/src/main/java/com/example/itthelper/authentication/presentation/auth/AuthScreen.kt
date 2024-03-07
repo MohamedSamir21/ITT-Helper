@@ -164,7 +164,7 @@ fun AgreementText(
                     color = Color.Green
                 )
             )
-            append(stringResource(id = R.string.to_terms))
+            append(stringResource(id = R.string.the_terms))
             pop()
             append(", ")
             pushStyle(

@@ -2,4 +2,13 @@
     <string name="app_name">ITT Helper</string>
     <string name="next">Next</string>
     <string name="skip">Skip</string>
+    <string name="welcome">Welcome</string>
+    <string name="register_request_message">Before Enjoying ITT Helper Services \n Please Register First</string>
+    <string name="login">Login</string>
+    <string name="create_account">Create Account</string>
+    <string name="logging_registering">By Logging in Or Registering. You Have Agreed To </string>
+    <string name="the_terms">The Terms</string>
+    <string name="conditions">Conditions</string>
+    <string name="and">And</string>
+    <string name="privacy_policy">Privacy Policy</string>
 </resources>
