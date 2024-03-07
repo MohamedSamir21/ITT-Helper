@@ -7,7 +7,8 @@ import com.example.itthelper.authentication.presentation.util.OnBoardingPage
 data class WelcomeScreenState(
     val onBoardingPages: List<OnBoardingPage>,
     val currentPageIndex: Int = 0,
-    val indicatorCirclesColors: List<IndicatorCircleColor>
+    val indicatorCirclesColors: List<IndicatorCircleColor>,
+    val isLastPage: Boolean = false
 )
 
 data class IndicatorCircleColor(

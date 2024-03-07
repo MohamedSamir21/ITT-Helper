@@ -24,22 +24,30 @@ class WelcomeViewModel : ViewModel() {
     val state: State<WelcomeScreenState>
         get() = _state
 
-    fun updateCurrentPageIndex(index: Int) {
-        val oldPageIndex = _state.value.currentPageIndex
-        if (index > oldPageIndex)
-            increaseCurrentPageIndex(index)
-        else
-            decreaseCurrentPageIndex(index)
+    fun updateCurrentPageIndex(currentPageIndex: Int) {
+        val oldPageIndex = state.value.currentPageIndex
+        if (currentPageIndex > oldPageIndex)
+            increaseCurrentPageIndex(currentPageIndex)
+        else if (currentPageIndex < oldPageIndex)
+            decreaseCurrentPageIndex(currentPageIndex)
     }
 
-    fun increaseCurrentPageIndex(index: Int) {
-        if (index < 3)
-            _state.value = _state.value.copy(currentPageIndex = index + 1)
+    private fun increaseCurrentPageIndex(currentPageIndex: Int) {
+        val state = state.value
+        _state.value = state.copy(currentPageIndex = currentPageIndex)
+        if (currentPageIndex == 2)
+            toggleLastPageState(state.isLastPage)
     }
 
-    private fun decreaseCurrentPageIndex(index: Int) {
-        if (index > 0)
-            _state.value = _state.value.copy(currentPageIndex = index - 1)
+    private fun decreaseCurrentPageIndex(currentPageIndex: Int) {
+        val state = state.value
+        _state.value = state.copy(currentPageIndex = currentPageIndex)
+        if (currentPageIndex == 1)
+            toggleLastPageState(state.isLastPage)
+    }
+
+    private fun toggleLastPageState(oldValue: Boolean) {
+        _state.value = state.value.copy(isLastPage = oldValue.not())
     }
 
     fun updateIndicatorCirclesColors(currentPageIndex: Int) {
