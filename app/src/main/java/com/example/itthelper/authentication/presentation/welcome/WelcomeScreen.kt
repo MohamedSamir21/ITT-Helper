@@ -79,16 +79,17 @@ fun WelcomeScreen(
                     .fillMaxWidth()
             )
         }
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(.2f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            contentAlignment = Alignment.Center
         ) {
             val isNotLastPage = !state.value.isLastPage
             if (isNotLastPage)
-                SkipButton {
+                SkipButton(
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
                     navController.popBackStack()
                     navController.navigate(
                         route = Screen.AUTH.route
@@ -100,7 +101,9 @@ fun WelcomeScreen(
             ) {
                 viewModel.updateIndicatorCirclesColors(it)
             }
-            NextButton {
+            NextButton(
+                modifier = Modifier.align(Alignment.CenterEnd)
+            ) {
                 // Improve Coroutine creation here..
                 scope.launch {
                     if (state.value.isLastPage) {
@@ -153,18 +156,26 @@ fun PagerScreen(
 
 @Composable
 fun SkipButton(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
-    TextButton(onClick = { onClick() }) {
+    TextButton(
+        modifier = modifier,
+        onClick = { onClick() }
+    ) {
         Text(text = stringResource(R.string.skip))
     }
 }
 
 @Composable
 fun NextButton(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
-    IconButton(onClick = { onClick() }) {
+    IconButton(
+        modifier = modifier,
+        onClick = { onClick() }
+    ) {
         Icon(
             imageVector = Icons.Filled.ArrowForward,
             contentDescription = stringResource(R.string.next)
