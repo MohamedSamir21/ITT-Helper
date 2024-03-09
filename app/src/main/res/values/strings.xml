@@ -6,9 +6,19 @@
     <string name="register_request_message">Before Enjoying ITT Helper Services \n Please Register First</string>
     <string name="login">Login</string>
     <string name="create_account">Create Account</string>
-    <string name="logging_registering">By Logging in Or Registering. You Have Agreed To </string>
-    <string name="the_terms">The Terms</string>
-    <string name="conditions">Conditions</string>
-    <string name="and">And</string>
-    <string name="privacy_policy">Privacy Policy</string>
+    <string name="registering_commitment">By registering, you have to agree to </string>
+    <string name="the_terms">the terms</string>
+    <string name="conditions">conditions</string>
+    <string name="and">and</string>
+    <string name="privacy_policy">privacy policy</string>
+    <string name="lets_register">Let\'s Register</string>
+    <string name="do_you_have_an_account">"Do you have an account? "</string>
+    <string name="log_in">Log In</string>
+    <string name="required">required</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="email">Email</string>
+    <string name="email_address">Email Address</string>
+    <string name="person">Person</string>
+    <string name="nick_name">Nick Name</string>
 </resources>
