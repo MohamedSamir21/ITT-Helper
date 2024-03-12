@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,13 +18,16 @@ import com.example.itthelper.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailTextField(
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    isError: Boolean,
+    errorMessage: String,
+    disableSupportingText: Boolean = true
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = { onValueChange(value) },
+        onValueChange = { onValueChange(it) },
         label = {
             Text(text = stringResource(R.string.email_address))
         },
@@ -34,11 +38,17 @@ fun EmailTextField(
             )
         },
         supportingText = {
-            Text(text = "*" + stringResource(R.string.required))
+            if (isError)
+                Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+            else if (disableSupportingText)
+                Text(text = "")
+            else
+                Text(text = "*" + stringResource(R.string.required))
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email
         ),
+        isError = isError,
         modifier = modifier.fillMaxWidth()
     )
 }
