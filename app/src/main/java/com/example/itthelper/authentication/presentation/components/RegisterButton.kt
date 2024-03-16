@@ -1,7 +1,5 @@
 package com.example.itthelper.authentication.presentation.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,8 +16,6 @@ fun RegisterButton(
     Button(
         onClick = { onClick() },
         modifier = modifier
-            .fillMaxWidth()
-            .padding()
     ) {
         Text(
             text = stringResource(R.string.create_account)
