@@ -45,6 +45,7 @@ fun EmailTextField(
             else
                 Text(text = "*" + stringResource(R.string.required))
         },
+        singleLine = true,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email
         ),
