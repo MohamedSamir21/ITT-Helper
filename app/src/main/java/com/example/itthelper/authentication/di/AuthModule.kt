@@ -6,6 +6,8 @@ import com.example.itthelper.authentication.data.local.DataStoreRepository
 import com.example.itthelper.authentication.data.remote.AuthenticationApi
 import com.example.itthelper.authentication.data.repository.AuthRepositoryImpl
 import com.example.itthelper.authentication.domain.repository.AuthRepository
+import com.example.itthelper.authentication.domain.validation.EmailValidator
+import com.example.itthelper.authentication.presentation.util.EmailValidatorImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,4 +43,10 @@ object AuthModule {
         return AuthRepositoryImpl(api, dataStoreRepository)
     }
 
+
+    @Provides
+    @Singleton
+    fun provideEmailValidator(): EmailValidator {
+        return EmailValidatorImpl()
+    }
 }
