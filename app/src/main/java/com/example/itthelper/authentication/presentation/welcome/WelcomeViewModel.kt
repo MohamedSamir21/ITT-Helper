@@ -4,9 +4,15 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import com.example.itthelper.authentication.domain.usecase.preferences.SaveWelcomeDoneUseCase
 import com.example.itthelper.authentication.presentation.util.OnBoardingPage
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class WelcomeViewModel : ViewModel() {
+@HiltViewModel
+class WelcomeViewModel @Inject constructor(
+    private val saveWelcomeDoneUseCase: SaveWelcomeDoneUseCase
+) : ViewModel() {
     private val _state = mutableStateOf(
         WelcomeScreenState(
             onBoardingPages = listOf(
@@ -59,6 +65,10 @@ class WelcomeViewModel : ViewModel() {
                     colorItem.copy(color = Color.Gray)
             }
         )
+    }
+
+    suspend fun saveOnWelcomeDone(done: Boolean) {
+        saveWelcomeDoneUseCase(done)
     }
 
 }
