@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,7 +73,7 @@ fun WelcomeSection(
             text = stringResource(R.string.register_request_message),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
-            color = Color.Gray
+            color = MaterialTheme.colorScheme.secondary
         )
     }
 }
@@ -102,7 +101,6 @@ fun LoginButton(
         onClick = { onClick() },
         modifier = modifier
             .fillMaxWidth()
-            .padding()
     ) {
         Text(
             text = stringResource(R.string.login)
