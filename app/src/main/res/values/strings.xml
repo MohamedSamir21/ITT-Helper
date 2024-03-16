@@ -21,4 +21,7 @@
     <string name="email_address">Email Address</string>
     <string name="person">Person</string>
     <string name="nick_name">Nick Name</string>
+    <string name="lets_login">Let\'s Login</string>
+    <string name="havent_account_yet">Haven\'t an account yet?</string>
+    <string name="register">Register</string>
 </resources>
