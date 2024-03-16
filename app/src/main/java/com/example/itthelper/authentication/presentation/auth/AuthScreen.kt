@@ -83,10 +83,12 @@ fun AuthSection(
     navController: NavHostController
 ) {
     Column {
-        RegisterButton(modifier = Modifier.padding(horizontal = 10.dp)){
+        RegisterButton(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)) {
             navController.navigate(Screen.REGISTER.route)
         }
-        LoginButton(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)){
+        LoginButton(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
             navController.navigate(Screen.LOGIN.route)
         }
     }
