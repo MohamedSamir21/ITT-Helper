@@ -42,7 +42,9 @@ import androidx.navigation.NavHostController
 import com.example.itthelper.R
 import com.example.itthelper.authentication.presentation.navigation.Screen
 import com.example.itthelper.authentication.presentation.util.OnBoardingPage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -90,6 +92,11 @@ fun WelcomeScreen(
                 SkipButton(
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
+                    scope.launch {
+                        withContext(Dispatchers.IO){
+                            viewModel.saveOnWelcomeDone(true)
+                        }
+                    }
                     navController.popBackStack()
                     navController.navigate(
                         route = Screen.AUTH.route
@@ -107,6 +114,9 @@ fun WelcomeScreen(
                 // Improve Coroutine creation here..
                 scope.launch {
                     if (state.value.isLastPage) {
+                        withContext(Dispatchers.IO){
+                            viewModel.saveOnWelcomeDone(true)
+                        }
                         navController.popBackStack()
                         navController.navigate(Screen.AUTH.route)
                     } else {
