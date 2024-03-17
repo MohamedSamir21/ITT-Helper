@@ -1,4 +1,4 @@
-package com.example.itthelper.ui.theme
+package com.example.itthelper.core.ui.theme
 
 import android.app.Activity
 import android.os.Build

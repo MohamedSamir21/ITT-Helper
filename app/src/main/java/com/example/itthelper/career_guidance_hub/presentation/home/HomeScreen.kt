@@ -1,4 +1,4 @@
-package com.example.itthelper.ui
+package com.example.itthelper.career_guidance_hub.presentation.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import com.example.itthelper.career_guidance_hub.presentation.navigation.NavigationItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

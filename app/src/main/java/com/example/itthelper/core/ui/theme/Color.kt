@@ -1,4 +1,4 @@
-package com.example.itthelper.ui.theme
+package com.example.itthelper.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
