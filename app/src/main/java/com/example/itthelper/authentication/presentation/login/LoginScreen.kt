@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.itthelper.MainActivity
+import com.example.itthelper.career_guidance_hub.presentation.CareerHubActivity
 import com.example.itthelper.R
 import com.example.itthelper.authentication.domain.result.AuthResult
 import com.example.itthelper.authentication.presentation.components.AppLogo
@@ -47,7 +47,7 @@ fun LoginScreen(
                         Toast.LENGTH_LONG
                     ).show()
                     navController.popBackStack()
-                    Intent(context, MainActivity::class.java).let {
+                    Intent(context, CareerHubActivity::class.java).let {
                         it.flags = Intent.FLAG_ACTIVITY_NEW_TASK + Intent.FLAG_ACTIVITY_CLEAR_TASK
                         context.startActivity(it)
                     }

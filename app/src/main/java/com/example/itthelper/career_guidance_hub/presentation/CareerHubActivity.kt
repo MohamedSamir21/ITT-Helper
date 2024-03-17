@@ -1,4 +1,4 @@
-package com.example.itthelper
+package com.example.itthelper.career_guidance_hub.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,12 +16,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.itthelper.ui.HomeScreen
-import com.example.itthelper.ui.HomeViewModel
-import com.example.itthelper.ui.NavigationItem
-import com.example.itthelper.ui.theme.ITTHelperTheme
+import com.example.itthelper.career_guidance_hub.presentation.home.HomeScreen
+import com.example.itthelper.career_guidance_hub.presentation.home.HomeViewModel
+import com.example.itthelper.career_guidance_hub.presentation.navigation.NavigationItem
+import com.example.itthelper.core.ui.theme.ITTHelperTheme
 
-class MainActivity : ComponentActivity() {
+class CareerHubActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

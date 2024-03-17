@@ -1,4 +1,4 @@
-package com.example.itthelper.ui
+package com.example.itthelper.career_guidance_hub.presentation.home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
