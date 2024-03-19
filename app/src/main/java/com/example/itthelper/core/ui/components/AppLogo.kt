@@ -1,4 +1,4 @@
-package com.example.itthelper.authentication.presentation.components
+package com.example.itthelper.core.ui.components
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

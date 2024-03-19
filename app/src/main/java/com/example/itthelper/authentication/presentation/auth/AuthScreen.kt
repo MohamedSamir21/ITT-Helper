@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.itthelper.R
-import com.example.itthelper.authentication.presentation.components.AppLogo
+import com.example.itthelper.core.ui.components.AppLogo
 import com.example.itthelper.authentication.presentation.components.RegisterButton
 import com.example.itthelper.authentication.presentation.navigation.Screen
 

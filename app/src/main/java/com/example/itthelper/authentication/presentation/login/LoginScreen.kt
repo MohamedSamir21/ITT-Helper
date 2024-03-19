@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import com.example.itthelper.career_guidance_hub.presentation.CareerHubActivity
 import com.example.itthelper.R
 import com.example.itthelper.authentication.domain.result.AuthResult
-import com.example.itthelper.authentication.presentation.components.AppLogo
+import com.example.itthelper.core.ui.components.AppLogo
 import com.example.itthelper.authentication.presentation.components.AuthMethodSwitch
 import com.example.itthelper.authentication.presentation.components.EmailTextField
 import com.example.itthelper.authentication.presentation.components.PasswordTextField
