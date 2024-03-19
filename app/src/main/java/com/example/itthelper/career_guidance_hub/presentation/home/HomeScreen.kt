@@ -1,97 +1,65 @@
 package com.example.itthelper.career_guidance_hub.presentation.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import com.example.itthelper.career_guidance_hub.presentation.navigation.NavigationItem
+import androidx.compose.ui.unit.dp
+import com.example.itthelper.career_guidance_hub.presentation.util.TabContent
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    navigationItems: List<NavigationItem>,
-    tabs: List<String>,
-    selectedNavigationItemIndex: Int = 0,
-    selectedTabIndex: Int? = null,
-    onSelectedNavigationItemIndex: (Int) -> Unit,
-    onSelectedTabIndex: (Int) -> Unit
+    viewModel: HomeViewModel
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = buildAnnotatedString {
-                            append("ITT")
-                            pushStyle(
-                                SpanStyle(
-                                    color = Color.Red
-                                )
-                            )
-                            append("Helper")
-                        }
-                    )
-                }
-            )
-        },
-        bottomBar = {
-            NavigationBar {
-                navigationItems.forEachIndexed { index, navigationItem ->
-                    val isItemSelected = index == selectedNavigationItemIndex
+    val state = viewModel.state.value
+    val pagerState = rememberPagerState {
+        state.tabs.size
+    }
+    val scope = rememberCoroutineScope()
 
-                    NavigationBarItem(
-                        selected = isItemSelected,
-                        onClick = { onSelectedNavigationItemIndex(index) },
-                        icon = {
-                            Icon(
-                                imageVector =
-                                if (isItemSelected)
-                                    navigationItem.selectedIcon
-                                else
-                                    navigationItem.unselectedIcon,
-                                contentDescription = navigationItem.title
-                            )
-                        },
-                        label = {
-                            Text(text = navigationItem.title)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        ScrollableTabRow(
+            selectedTabIndex = state.selectedTabIndex
+        ) {
+            state.tabs.forEachIndexed { index, tabItem ->
+                Tab(
+                    selected = index == state.selectedTabIndex,
+                    onClick = {
+                        viewModel.updateSelectedTabIndex(index)
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
                         }
-                    )
-                }
+                    },
+                    text = {
+                        Text(text = tabItem.title)
+                    }
+                )
             }
         }
-    ) { paddingValues ->
-        Column (
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ){
-            if (selectedTabIndex != null) {
-                TabRow(selectedTabIndex = selectedTabIndex) {
-                    tabs.forEachIndexed { index, tabTitle ->
-                        Tab(
-                            selected = index == selectedTabIndex,
-                            onClick = {
-                                onSelectedTabIndex(index)
-                            },
-                            text = {
-                                Text(text = tabTitle)
-                            }
-                        )
-                    }
-                }
+        HorizontalPager(
+            state = pagerState,
+            userScrollEnabled = false,
+            modifier = Modifier.padding(10.dp)
+        ) { index ->
+            when (state.tabs[index].tabContent) {
+                is TabContent.CareerPath -> Text(text = "Career Path")
+                is TabContent.EmploymentMarket -> Text(text = "Employment Market")
+                is TabContent.EventsWorkshops -> Text(text = "Events & Workshops")
+                is TabContent.CvsTips -> Text(text = "Cvs & Tips")
+                is TabContent.GuideForInterviews -> Text(text = "Guide For Interviews")
             }
         }
     }
