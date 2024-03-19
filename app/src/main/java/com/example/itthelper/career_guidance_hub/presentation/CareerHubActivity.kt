@@ -68,6 +68,7 @@ class CareerHubActivity : ComponentActivity() {
                 }
                 CareerHubFeature(
                     navController = navController,
+                    selectedNavigationItemIndex = selectedNavigationItemIndex,
                     bottomNavigationItems = bottomNavigationItems
                 ) {
                     selectedNavigationItemIndex = it
