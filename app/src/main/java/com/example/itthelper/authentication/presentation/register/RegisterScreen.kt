@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -41,6 +44,7 @@ import com.example.itthelper.authentication.presentation.components.AppLogo
 import com.example.itthelper.authentication.presentation.components.AuthMethodSwitch
 import com.example.itthelper.authentication.presentation.components.EmailTextField
 import com.example.itthelper.authentication.presentation.components.PasswordTextField
+import com.example.itthelper.authentication.presentation.components.UsernameTextField
 import com.example.itthelper.authentication.presentation.components.RegisterButton
 import com.example.itthelper.authentication.presentation.navigation.Screen
 
@@ -67,6 +71,7 @@ fun RegisterScreen(
                         context.startActivity(it)
                     }
                 }
+
                 is AuthResult.Unauthorized -> {
                     Toast.makeText(
                         context,
@@ -74,6 +79,7 @@ fun RegisterScreen(
                         Toast.LENGTH_LONG
                     ).show()
                 }
+
                 is AuthResult.UnknownError -> {
                     Toast.makeText(
                         context,
@@ -107,66 +113,7 @@ fun RegisterScreen(
             helperMessage = stringResource(id = R.string.do_you_have_an_account),
             authMessage = stringResource(id = R.string.log_in)
         )
-        PersonTextField(
-            value = state.userData.nickName,
-        ) { newNickName ->
-            Log.i("RegisterScreen", newNickName)
-            viewModel.onEvent(
-                RegisterScreenEvent.UserDataChanged(
-                    userData = state.userData.copy(nickName = newNickName)
-                )
-            )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        EmailTextField(
-            value = state.userData.email,
-            isError = state.emailError != null,
-            errorMessage = state.emailError.toString(),
-            disableSupportingText = false,
-            onValueChange = { newEmail ->
-                viewModel.onEvent(
-                    RegisterScreenEvent.UserDataChanged(
-                        userData = state.userData.copy(
-                            email = newEmail
-                        )
-                    )
-                )
-            }
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        PasswordTextField(
-            value = state.userData.password,
-            disableSupportingText = false,
-            onValueChange = { newPassword ->
-                viewModel.onEvent(
-                    RegisterScreenEvent.UserDataChanged(
-                        userData = state.userData.copy(
-                            password = newPassword
-                        )
-                    )
-                )
-            },
-            label = stringResource(id = R.string.password),
-            isError = state.passwordError != null,
-            errorMessage = state.passwordError.toString()
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        PasswordTextField(
-            value = state.userData.confirmedPassword,
-            disableSupportingText = false,
-            onValueChange = { newConfirmedPassword ->
-                viewModel.onEvent(
-                    RegisterScreenEvent.UserDataChanged(
-                        userData = state.userData.copy(
-                            confirmedPassword = newConfirmedPassword
-                        )
-                    )
-                )
-            },
-            label = stringResource(id = R.string.confirm_password),
-            isError = state.confirmedPasswordError != null,
-            errorMessage = state.confirmedPasswordError.toString()
-        )
+        FormTextFields(viewModel = viewModel)
         AgreementSection(
             checked = state.userData.acceptedTerms,
             termsErrorMessage = state.acceptedTermsError
@@ -177,37 +124,101 @@ fun RegisterScreen(
                 )
             )
         }
-        RegisterButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-        ) {
-            viewModel.onEvent(RegisterScreenEvent.Submit)
+        if (state.isLoading) {
+            CircularProgressIndicator()
+        } else {
+            RegisterButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
+            ) {
+                viewModel.onEvent(RegisterScreenEvent.Submit)
+            }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PersonTextField(
-    value: String,
-    onValueChange: (String) -> Unit
+fun FormTextFields(
+    viewModel: RegisterViewModel
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = { onValueChange(it) },
-        label = {
-            Text(text = stringResource(R.string.nick_name))
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Person,
-                contentDescription = stringResource(R.string.person)
+    val state = viewModel.state.value
+    UsernameTextField(
+        value = state.userData.username,
+        isError = state.usernameError != null,
+        errorMessage = state.usernameError.toString(),
+        disableSupportingText = false,
+    ) { newUserName ->
+        Log.i("RegisterScreen", newUserName)
+        viewModel.onEvent(
+            RegisterScreenEvent.UserDataChanged(
+                userData = state.userData.copy(username = newUserName)
+            )
+        )
+    }
+    Spacer(modifier = Modifier.height(5.dp))
+    EmailTextField(
+        value = state.userData.email,
+        isError = state.emailError != null,
+        errorMessage = state.emailError.toString(),
+        disableSupportingText = false,
+        onValueChange = { newEmail ->
+            viewModel.onEvent(
+                RegisterScreenEvent.UserDataChanged(
+                    userData = state.userData.copy(
+                        email = newEmail
+                    )
+                )
+            )
+        }
+    )
+    Spacer(modifier = Modifier.height(5.dp))
+    PasswordTextField(
+        value = state.userData.password,
+        disableSupportingText = false,
+        onValueChange = { newPassword ->
+            viewModel.onEvent(
+                RegisterScreenEvent.UserDataChanged(
+                    userData = state.userData.copy(
+                        password = newPassword
+                    )
+                )
             )
         },
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth()
+        label = stringResource(id = R.string.password),
+        isError = state.passwordError != null,
+        errorMessage = state.passwordError.toString()
     )
+    Spacer(modifier = Modifier.height(5.dp))
+    PasswordTextField(
+        value = state.userData.confirmedPassword,
+        disableSupportingText = false,
+        onValueChange = { newConfirmedPassword ->
+            viewModel.onEvent(
+                RegisterScreenEvent.UserDataChanged(
+                    userData = state.userData.copy(
+                        confirmedPassword = newConfirmedPassword
+                    )
+                )
+            )
+        },
+        label = stringResource(id = R.string.confirm_password),
+        isError = state.confirmedPasswordError != null,
+        errorMessage = state.confirmedPasswordError.toString()
+    )
+    Spacer(modifier = Modifier.height(5.dp))
+    PhoneNumberTextField(
+        value = state.userData.phoneNumber,
+        isError = state.phoneNumberError != null,
+        errorMessage = state.phoneNumberError.toString(),
+    ) { newPhoneNumber ->
+        viewModel.onEvent(
+            RegisterScreenEvent.UserDataChanged(
+                userData = state.userData.copy(phoneNumber = newPhoneNumber)
+            )
+        )
+    }
+    Spacer(modifier = Modifier.height(5.dp))
 }
 
 @Composable
@@ -282,6 +293,43 @@ private fun AgreementText(
         textAlign = textAlign,
         fontSize = fontSize,
         modifier = Modifier.fillMaxWidth()
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PhoneNumberTextField(
+    modifier: Modifier = Modifier,
+    value: String,
+    isError: Boolean,
+    errorMessage: String,
+    onValueChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = value,
+        label = {
+            Text(text = stringResource(id = R.string.phone_number))
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Phone,
+                contentDescription = stringResource(id = R.string.phone_number)
+            )
+        },
+        supportingText = {
+            if (isError)
+                Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+            else
+                Text(text = "*" + stringResource(id = R.string.required))
+        },
+        onValueChange = { newPhoneNumber ->
+            onValueChange(newPhoneNumber)
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Phone
+        ),
+        singleLine = true,
+        modifier = modifier.fillMaxWidth()
     )
 }
 
