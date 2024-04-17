@@ -4,5 +4,6 @@ import com.example.itthelper.authentication.domain.model.LoginUserData
 
 data class LoginScreenState(
     val userData: LoginUserData,
-    val emailError: String? = null
+    val usernameError: String? = null,
+    var isLoading: Boolean = false
 )

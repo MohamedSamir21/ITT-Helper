@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.itthelper.authentication.domain.model.LoginUserData
 import com.example.itthelper.authentication.domain.result.AuthResult
 import com.example.itthelper.authentication.domain.usecase.authentication.LogInUseCase
-import com.example.itthelper.authentication.domain.usecase.validation.ValidateEmailUseCase
+import com.example.itthelper.authentication.domain.usecase.validation.ValidateUsernameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val validateEmailUseCase: ValidateEmailUseCase,
+    private val validateUsername: ValidateUsernameUseCase,
     private val logInUseCase: LogInUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf(
@@ -36,7 +36,7 @@ class LoginViewModel @Inject constructor(
             is LoginScreenEvent.UserDataChanged -> {
                 _state.value = state.value.copy(
                     userData = event.userData.copy(
-                        email = event.userData.email,
+                        username = event.userData.username,
                         password = event.userData.password
                     )
                 )
@@ -53,17 +53,18 @@ class LoginViewModel @Inject constructor(
     private suspend fun submitData() {
         val state = state.value
 
-        val emailValidation = validateEmailUseCase(state.userData.email)
-        emailValidation.errorMessage?.let {
+        val usernameValidation = validateUsername(state.userData.username)
+        usernameValidation.errorMessage?.let {
             _state.value = state.copy(
-                emailError = emailValidation.errorMessage
+                usernameError = usernameValidation.errorMessage
             )
             return
         }
+        _state.value = state.copy(isLoading = true)
         withContext(Dispatchers.IO) {
             val loginResult = logInUseCase(
                 userData = LoginUserData(
-                    email = emailValidation.validatedData.toString(),
+                    username = usernameValidation.validatedData.toString(),
                     password = state.userData.password
                 )
             )
@@ -71,5 +72,6 @@ class LoginViewModel @Inject constructor(
                 authResultChannel.send(loginResult)
             }
         }
+        _state.value = state.copy(isLoading = false)
     }
 }
