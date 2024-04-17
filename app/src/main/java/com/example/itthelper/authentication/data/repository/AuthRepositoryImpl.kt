@@ -1,13 +1,13 @@
 package com.example.itthelper.authentication.data.repository
 
-import com.example.itthelper.authentication.data.local.DataStoreRepository
 import com.example.itthelper.authentication.data.remote.AuthenticationApi
-import com.example.itthelper.authentication.data.remote.SignInRequest
-import com.example.itthelper.authentication.data.remote.SignUpRequest
+import com.example.itthelper.authentication.data.remote.LoginRequest
+import com.example.itthelper.authentication.data.remote.RegisterRequest
 import com.example.itthelper.authentication.domain.model.LoginUserData
 import com.example.itthelper.authentication.domain.model.RegisterUserData
 import com.example.itthelper.authentication.domain.repository.AuthRepository
 import com.example.itthelper.authentication.domain.result.AuthResult
+import com.example.itthelper.core.data.local.DataStoreRepository
 import retrofit2.HttpException
 
 class AuthRepositoryImpl(
@@ -23,18 +23,26 @@ class AuthRepositoryImpl(
         return dataStore.readWelcomeDoneStatus()
     }
 
+    override suspend fun saveOnLoginDone(done: Boolean) {
+        return dataStore.saveOnLoginDone(done)
+    }
+
+    override suspend fun readLoginDoneStatus(): Boolean {
+        return dataStore.readLoginDoneStatus()
+    }
+
     override suspend fun registerNewUser(userData: RegisterUserData): AuthResult<Unit> {
         return try {
-            val registerRequest = SignUpRequest(
-                nickname = userData.nickName,
+            val registerRequest = RegisterRequest(
+                username = userData.username,
                 email = userData.email,
                 password = userData.password,
-                acceptedTerms = userData.acceptedTerms
+                phoneNumber = userData.phoneNumber
             )
             authenticationApi.register(registerRequest)
             loginUser(
                 userData = LoginUserData(
-                    email = userData.email,
+                    username = userData.username,
                     password = userData.password
                 )
             )
@@ -51,12 +59,14 @@ class AuthRepositoryImpl(
 
     override suspend fun loginUser(userData: LoginUserData): AuthResult<Unit> {
         return try {
-            val loginRequest = SignInRequest(
-                email = userData.email,
+            val loginRequest = LoginRequest(
+                username = userData.username,
                 password = userData.password
             )
             val tokenResponse = authenticationApi.login(loginRequest)
-            dataStore.saveTokenOnLoginDone(tokenResponse.token)
+            dataStore.saveOnLoginDone(true)
+            dataStore.saveAccessToken(tokenResponse.access)
+            dataStore.saveRefreshToken(tokenResponse.refresh)
             AuthResult.Authorized()
         } catch (ex: HttpException) {
             // Provide the appropriate Http error codes handling here according to the backend
@@ -67,22 +77,5 @@ class AuthRepositoryImpl(
         } catch (ex: Exception) {
             AuthResult.UnknownError()
         }
-    }
-
-    override suspend fun authenticate(): AuthResult<Unit> {
-        return try {
-            val savedToken = dataStore.readLoginToken() ?: return AuthResult.Unauthorized()
-            authenticationApi.authenticate("Bearer $savedToken")
-            AuthResult.Authorized()
-        } catch (ex: HttpException) {
-            // Provide the appropriate Http error codes handling here according to the backend
-            when (ex.code()) {
-                401 -> AuthResult.Unauthorized()
-                else -> AuthResult.UnknownError()
-            }
-        } catch (ex: Exception) {
-            AuthResult.UnknownError()
-        }
-
     }
 }

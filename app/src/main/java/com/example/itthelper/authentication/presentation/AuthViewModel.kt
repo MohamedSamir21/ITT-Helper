@@ -4,14 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.itthelper.authentication.domain.result.AuthResult
-import com.example.itthelper.authentication.domain.usecase.authentication.AuthenticateUseCase
+import com.example.itthelper.authentication.domain.usecase.preferences.ReadLoginDoneStatusUseCase
 import com.example.itthelper.authentication.domain.usecase.preferences.ReadWelcomeDoneStatusUseCase
 import com.example.itthelper.authentication.presentation.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,27 +16,33 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     readWelcomeDoneStatusUseCase: ReadWelcomeDoneStatusUseCase,
-    authenticateUseCase: AuthenticateUseCase
+    readLoginDoneStatusUseCase: ReadLoginDoneStatusUseCase
 ) : ViewModel() {
-    private val _startDestination = mutableStateOf<String?>(
-        null
+    private val _loginStatus = mutableStateOf(false)
+    val loginStatus: State<Boolean>
+        get() = _loginStatus
+    private val _startDestination = mutableStateOf(
+        Screen.WELCOME.route
     )
-    val startDestination: State<String?>
+    val startDestination: State<String>
         get() = _startDestination
-    private val authResultChannel = Channel<AuthResult<Unit>>()
-    val authResults = authResultChannel.receiveAsFlow()
+    private val _isLoading = mutableStateOf(false)
+    val isLoading: State<Boolean>
+        get() = _isLoading
 
     init {
+        _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
-            val authResult = authenticateUseCase()
+            val currentLoginStatus = readLoginDoneStatusUseCase()
             val isWelcomeDoneBefore = readWelcomeDoneStatusUseCase()
             withContext(Dispatchers.Main) {
-                authResultChannel.send(authResult)
+                _loginStatus.value = currentLoginStatus
                 if (isWelcomeDoneBefore) {
                     _startDestination.value = Screen.AUTH.route
                 } else {
                     _startDestination.value = Screen.WELCOME.route
                 }
+                _isLoading.value = false
             }
         }
     }

@@ -1,25 +1,17 @@
 package com.example.itthelper.authentication.data.remote
 
 import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface AuthenticationApi {
-
-    @POST("signup")
+    @POST("accounts/register")
     suspend fun register(
-        @Body request: SignUpRequest
+        @Body request: RegisterRequest
     )
 
-    @POST("signin")
+    @POST("accounts/login_user")
     suspend fun login(
-        @Body request: SignInRequest
+        @Body request: LoginRequest
     ): TokenResponse
-
-    @GET("authenticate")
-    suspend fun authenticate(
-        @Header("Authorization") token: String
-    )
 
 }

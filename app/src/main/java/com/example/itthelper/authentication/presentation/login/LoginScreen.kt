@@ -1,6 +1,7 @@
 package com.example.itthelper.authentication.presentation.login
 
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,8 +27,8 @@ import com.example.itthelper.R
 import com.example.itthelper.authentication.domain.result.AuthResult
 import com.example.itthelper.authentication.presentation.components.AppLogo
 import com.example.itthelper.authentication.presentation.components.AuthMethodSwitch
-import com.example.itthelper.authentication.presentation.components.EmailTextField
 import com.example.itthelper.authentication.presentation.components.PasswordTextField
+import com.example.itthelper.authentication.presentation.components.UsernameTextField
 import com.example.itthelper.authentication.presentation.navigation.Screen
 
 @Composable
@@ -92,18 +94,18 @@ fun LoginScreen(
             helperMessage = stringResource(R.string.havent_account_yet),
             authMessage = stringResource(R.string.register)
         )
-        EmailTextField(
-            value = state.userData.email,
-            onValueChange = {
-                viewModel.onEvent(
-                    LoginScreenEvent.UserDataChanged(
-                        userData = state.userData.copy(email = it)
-                    )
+        UsernameTextField(
+            value = state.userData.username,
+            isError = state.usernameError != null,
+            errorMessage = state.usernameError.toString(),
+        ) { newUserName ->
+            Log.i("RegisterScreen", newUserName)
+            viewModel.onEvent(
+                LoginScreenEvent.UserDataChanged(
+                    userData = state.userData.copy(username = newUserName)
                 )
-            },
-            isError = state.emailError != null,
-            errorMessage = state.emailError.toString()
-        )
+            )
+        }
         PasswordTextField(
             value = state.userData.password,
             onValueChange = {
@@ -117,16 +119,21 @@ fun LoginScreen(
             isError = false,
             errorMessage = ""
         )
-        Button(
-            onClick = {
-                viewModel.onEvent(LoginScreenEvent.Submit)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
+        if (state.isLoading) {
+            CircularProgressIndicator()
+        } else {
+            Button(
+                onClick = {
+                    viewModel.onEvent(LoginScreenEvent.Submit)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
 
-        ) {
-            Text(text = "Login")
+                ) {
+                Text(text = "Login")
+            }
         }
+
     }
 }
