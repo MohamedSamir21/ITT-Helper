@@ -8,9 +8,8 @@ import com.example.itthelper.authentication.domain.usecase.preferences.ReadLogin
 import com.example.itthelper.authentication.domain.usecase.preferences.ReadWelcomeDoneStatusUseCase
 import com.example.itthelper.authentication.presentation.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,25 +25,25 @@ class AuthViewModel @Inject constructor(
     )
     val startDestination: State<String>
         get() = _startDestination
-    private val _isLoading = mutableStateOf(false)
+    private val _isLoading = mutableStateOf(true)
     val isLoading: State<Boolean>
         get() = _isLoading
 
     init {
-        _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentLoginStatus = readLoginDoneStatusUseCase()
-            val isWelcomeDoneBefore = readWelcomeDoneStatusUseCase()
-            withContext(Dispatchers.Main) {
-                _loginStatus.value = currentLoginStatus
-                if (isWelcomeDoneBefore) {
-                    _startDestination.value = Screen.AUTH.route
-                } else {
-                    _startDestination.value = Screen.WELCOME.route
-                }
-                _isLoading.value = false
+        viewModelScope.launch {
+            val loginStatusJob = launch {
+                _loginStatus.value = readLoginDoneStatusUseCase()
             }
+            val welcomeDoneJob = launch {
+                _startDestination.value =
+                    if (readWelcomeDoneStatusUseCase()) Screen.AUTH.route else Screen.WELCOME.route
+            }
+            loginStatusJob.join()
+            welcomeDoneJob.join()
+
+            delay(500L)
+            _isLoading.value = false
         }
     }
-
 }
+

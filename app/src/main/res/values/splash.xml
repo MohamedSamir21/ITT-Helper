@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.ITTHelper.Splash" parent="Theme.SplashScreen.IconBackground">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_foreground_less_than_12</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/primary_container_light</item>
+        <item name="windowSplashScreenBackground">@color/background_light_high_contrast</item>
+        <item name="postSplashScreenTheme">@style/Theme.ITTHelper</item>
+    </style>
+</resources>

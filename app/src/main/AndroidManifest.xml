@@ -18,7 +18,7 @@
         <activity
             android:name=".authentication.presentation.AuthActivity"
             android:exported="true"
-            android:theme="@style/Theme.ITTHelper">
+            android:theme="@style/Theme.ITTHelper.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

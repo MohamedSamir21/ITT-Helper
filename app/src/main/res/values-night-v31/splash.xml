@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.ITTHelper.Splash" parent="Theme.SplashScreen">
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/animated_logo</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/on_background_dark_high_contrast</item>
+        <item name="android:windowSplashScreenBackground">@color/background_dark_high_contrast</item>
+        <item name="postSplashScreenTheme">@style/Theme.ITTHelper</item>
+    </style>
+</resources>
