@@ -10,20 +10,20 @@ sealed class OnBoardingPage(
     val description: String
 ){
     object First: OnBoardingPage(
-        image = R.drawable.success,
-        title = "Success",
-        description = "ITT Helper helps others start their careers by providing guidance, support and resources to empower them on their career journey"
+        image = R.drawable.guidance,
+        title = "Guidance and Mentorship",
+        description = "Mentorship can provide numerous benefits for mentors and their mentees."
     )
 
     object Second: OnBoardingPage(
-        image = R.drawable.mentorship,
-        title = "Mentorship",
-        description = "Experts offer advice, share ideas, and serve as role models"
+        image = R.drawable.network,
+        title = "Networking Opportunities",
+        description = "An event that allows you to interact with business professionals to learn new skills."
     )
 
     object Third: OnBoardingPage(
-        image = R.drawable.educational_resources,
-        title = "Educational resources",
-        description = "Providing access to educational resources, workshops, and skill-building opportunities provides them with the tools to succeed"
+        image = R.drawable.skill,
+        title = "Skill Development",
+        description = "The process of improving specific skills by training to be more efficient and effective."
     )
 }

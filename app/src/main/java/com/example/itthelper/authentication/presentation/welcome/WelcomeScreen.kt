@@ -3,6 +3,7 @@ package com.example.itthelper.authentication.presentation.welcome
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -19,7 +21,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -53,6 +57,7 @@ fun WelcomeScreen(
     viewModel: WelcomeViewModel
 ) {
     val state = viewModel.state
+    viewModel.setSystemThemeState(isSystemInDarkTheme())
 
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
@@ -90,10 +95,11 @@ fun WelcomeScreen(
             val isNotLastPage = !state.value.isLastPage
             if (isNotLastPage)
                 SkipButton(
-                    modifier = Modifier.align(Alignment.CenterStart)
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    textColor = MaterialTheme.colorScheme.tertiary
                 ) {
                     scope.launch {
-                        withContext(Dispatchers.IO){
+                        withContext(Dispatchers.IO) {
                             viewModel.saveOnWelcomeDone(true)
                         }
                     }
@@ -114,7 +120,7 @@ fun WelcomeScreen(
                 // Improve Coroutine creation here..
                 scope.launch {
                     if (state.value.isLastPage) {
-                        withContext(Dispatchers.IO){
+                        withContext(Dispatchers.IO) {
                             viewModel.saveOnWelcomeDone(true)
                         }
                         navController.popBackStack()
@@ -139,24 +145,38 @@ fun PagerScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Image(
-            painter = painterResource(id = onBoardingPage.image),
-            contentDescription = onBoardingPage.title,
+        Box(
             modifier = Modifier
                 .padding(bottom = 50.dp)
                 .fillMaxWidth(.5f)
                 .fillMaxHeight(.3f),
-            contentScale = ContentScale.Fit
-        )
+            contentAlignment = Alignment.Center
+        ) {
+            Card(
+                modifier = Modifier
+                    .requiredSize(200.dp)
+                    .alpha(.1f)
+            ) {}
+            Image(
+                painter = painterResource(id = onBoardingPage.image),
+                contentDescription = onBoardingPage.title,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .requiredSize(150.dp)
+            )
+        }
+
         Text(
             text = onBoardingPage.title,
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 25.dp)
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(vertical = 25.dp)
         )
         Text(
             text = onBoardingPage.description,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier
                 .fillMaxHeight(.5f)
                 .verticalScroll(rememberScrollState())
@@ -167,13 +187,17 @@ fun PagerScreen(
 @Composable
 fun SkipButton(
     modifier: Modifier = Modifier,
+    textColor: Color,
     onClick: () -> Unit = {}
 ) {
     TextButton(
         modifier = modifier,
         onClick = { onClick() }
     ) {
-        Text(text = stringResource(R.string.skip))
+        Text(
+            text = stringResource(R.string.skip),
+            color = textColor
+        )
     }
 }
 
@@ -187,8 +211,9 @@ fun NextButton(
         onClick = { onClick() }
     ) {
         Icon(
-            imageVector = Icons.Filled.ArrowForward,
-            contentDescription = stringResource(R.string.next)
+            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+            contentDescription = stringResource(R.string.next),
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }

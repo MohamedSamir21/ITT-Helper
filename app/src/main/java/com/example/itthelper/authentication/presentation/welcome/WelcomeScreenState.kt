@@ -8,7 +8,8 @@ data class WelcomeScreenState(
     val onBoardingPages: List<OnBoardingPage>,
     val currentPageIndex: Int = 0,
     val indicatorCirclesColors: List<IndicatorCircleColor>,
-    val isLastPage: Boolean = false
+    val isLastPage: Boolean = false,
+    val isSystemInDarkTheme: Boolean = false
 )
 
 data class IndicatorCircleColor(
