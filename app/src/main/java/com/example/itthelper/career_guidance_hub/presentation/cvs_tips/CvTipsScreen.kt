@@ -7,8 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.itthelper.R
 import com.example.itthelper.career_guidance_hub.presentation.components.TipsComponent
 import com.example.itthelper.career_guidance_hub.presentation.util.CvsTips
 import com.example.itthelper.career_guidance_hub.presentation.util.TipItem
@@ -20,6 +22,7 @@ fun CvTips(
 ) {
     TipsComponent(
         modifier = Modifier.padding(5.dp),
+        tipsHeadline = stringResource(R.string.guides_for_making_your_cv),
         tips = tips
     ) { index ->
         onClicked(index)

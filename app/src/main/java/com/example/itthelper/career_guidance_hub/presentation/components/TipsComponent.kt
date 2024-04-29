@@ -27,6 +27,7 @@ import com.example.itthelper.career_guidance_hub.presentation.util.TipItem
 fun TipsComponent(
     modifier: Modifier = Modifier,
     tips: List<TipItem>,
+    tipsHeadline: String,
     onClick: (Int) -> Unit
 ) {
     Column(
@@ -36,7 +37,7 @@ fun TipsComponent(
             modifier = Modifier.padding(vertical = 10.dp),
             icon = Icons.Default.Lightbulb,
             iconTint = MaterialTheme.colorScheme.onTertiaryContainer,
-            text = stringResource(R.string.there_are_some_guides_for_interviews),
+            text = tipsHeadline,
             textColor = MaterialTheme.colorScheme.onTertiaryContainer
         )
         Card(
@@ -62,9 +63,13 @@ private fun TipsComponentPreview() {
         mutableStateOf(CvsTips.tips)
     }
 
-    TipsComponent(tips = state) { index ->
+    TipsComponent(
+        tips = state,
+        tipsHeadline = stringResource(R.string.there_are_some_guides_for_interviews)
+    ) { index ->
         val updatedTips = state.toMutableList()
-        updatedTips[index] = updatedTips[index].copy(showDescription = state[index].showDescription.not())
+        updatedTips[index] =
+            updatedTips[index].copy(showDescription = state[index].showDescription.not())
         state = updatedTips
     }
 }
