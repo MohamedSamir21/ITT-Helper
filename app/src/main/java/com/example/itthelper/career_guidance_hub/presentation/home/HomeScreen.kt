@@ -14,12 +14,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.itthelper.career_guidance_hub.presentation.util.TabContent
+import com.example.itthelper.career_guidance_hub.presentation.util.Tabs
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    onTabSelected: @Composable (TabContent) -> Unit
 ) {
     val state = viewModel.state.value
     val pagerState = rememberPagerState {
@@ -51,16 +53,10 @@ fun HomeScreen(
         }
         HorizontalPager(
             state = pagerState,
-            userScrollEnabled = false,
+            userScrollEnabled = true,
             modifier = Modifier.padding(10.dp)
-        ) { index ->
-            when (state.tabs[index].tabContent) {
-                is TabContent.CareerPath -> Text(text = "Career Path")
-                is TabContent.EmploymentMarket -> Text(text = "Employment Market")
-                is TabContent.EventsWorkshops -> Text(text = "Events & Workshops")
-                is TabContent.CvsTips -> Text(text = "Cvs & Tips")
-                is TabContent.GuideForInterviews -> Text(text = "Guide For Interviews")
-            }
+        ) {
+            onTabSelected(Tabs.tabs[it].tabContent)
         }
     }
 }
