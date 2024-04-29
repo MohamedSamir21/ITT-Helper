@@ -89,7 +89,7 @@ fun LoginScreen(
         AuthMethodSwitch(
             navController = navController,
             route = Screen.REGISTER.route,
-            helperMessage = stringResource(R.string.havent_account_yet),
+            helperMessage = stringResource(R.string.haven_not_account_yet),
             authMessage = stringResource(R.string.register)
         )
         EmailTextField(

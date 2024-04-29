@@ -22,6 +22,86 @@
     <string name="person">Person</string>
     <string name="nick_name">Nick Name</string>
     <string name="lets_login">Let\'s Login</string>
-    <string name="havent_account_yet">Haven\'t an account yet?</string>
+    <string name="haven_not_account_yet">Haven\'t an account yet?</string>
     <string name="register">Register</string>
+    <string name="tips">Tips</string>
+
+    <!--  Guides for CVs  -->
+    <string name="guides_for_making_your_cv">There are some guides for making your CV</string>
+
+    <string name="cv_tip_1_title">Clear Formatting</string>
+    <string name="cv_tip_1_description">Use a clean and professional layout. Choose a readable font and maintain consistency in formatting throughout the document.</string>
+
+    <string name="cv_tip_2_title">Contact Information</string>
+    <string name="cv_tip_2_description">Include your full name, phone number, email address, and optionally, your LinkedIn profile or personal website at the top of the CV.</string>
+
+    <string name="cv_tip_3_title">Personal Statement or Summary</string>
+    <string name="cv_tip_3_description">Write a brief overview of your skills, experiences, and career goals. This section should grab the reader\'s attention and highlight what makes you a strong candidate.</string>
+
+    <string name="cv_tip_4_title">Work Experience</string>
+    <string name="cv_tip_4_description">List your work history in reverse chronological order, starting with your most recent job. Include the company name, your job title, and the dates you worked there. Use bullet points to describe your responsibilities and accomplishments in each role.</string>
+
+    <string name="cv_tip_5_title">Education</string>
+    <string name="cv_tip_5_description">Include your educational background, starting with your most recent degree. List the institution\'s name, degree earned, and graduation year. You can also include relevant coursework, academic honors, or extracurricular activities.</string>
+
+    <string name="cv_tip_6_title">Skills</string>
+    <string name="cv_tip_6_description">Highlight your key skills and competencies relevant to the position you\'re applying for. This can include technical skills, languages, software proficiency, and soft skills such as communication and teamwork.</string>
+
+    <string name="cv_tip_7_title">Achievements</string>
+    <string name="cv_tip_7_description">Showcase any notable achievements or awards you\'ve received in your career, such as certifications, publications, or recognition from previous employers.</string>
+
+    <string name="cv_tip_8_title">Tailor to the Job</string>
+    <string name="cv_tip_8_description">Customize your CV for each job application by emphasizing the skills and experiences that are most relevant to the position. Review the job description carefully and align your CV accordingly.</string>
+
+    <string name="cv_tip_9_title">Quantify Results</string>
+    <string name="cv_tip_9_description">Whenever possible, quantify your achievements with numbers or percentages to demonstrate your impact. For example, "Increased sales revenue by 20% in Q3" or "Managed a team of 10 employees."</string>
+
+    <string name="cv_tip_10_title">Proofread</string>
+    <string name="cv_tip_10_description">Take the time to proofread your CV carefully to catch any spelling or grammatical errors. It\'s also helpful to have someone else review it for feedback.</string>
+
+    <string name="cv_tip_11_title">Keep it Concise</string>
+    <string name="cv_tip_11_description">Aim for a CV length of one to two pages, depending on your level of experience. Focus on including relevant information and avoid unnecessary details.</string>
+
+    <string name="cv_tip_12_title">Submit your resume</string>
+    <string name="cv_tip_12_description">as a Word document or PDF.</string>
+
+    <string name="cv_tip_13_title">Include relevant resume keywords</string>
+    <string name="cv_tip_13_description">from the job description in your work experience, skills, and professional summary section.</string>
+
+    <string name="cv_tip_14_title">Update Regularly</string>
+    <string name="cv_tip_14_description">Keep your CV up to date with your latest experiences, skills, and achievements. Regularly review and revise it as your career progresses.</string>
+
+
+    <!--  Guides for Interviews  -->
+    <string name="there_are_some_guides_for_interviews">There are some guides for Interviews</string>
+
+    <string name="interview_tip_1_title">Research the Company</string>
+    <string name="interview_tip_1_description">Learn as much as you can about the company, its mission, values, culture, products/services, recent news, and any notable achievements. This will demonstrate your interest and enthusiasm for the role.</string>
+
+    <string name="interview_tip_2_title">Understand the Job Description</string>
+    <string name="tip_2_description">Analyze the job description carefully to understand the key requirements, responsibilities, and qualifications. Prepare examples from your experience that demonstrate how you meet these criteria.</string>
+
+    <string name="interview_tip_3_title">Practice Common Interview Questions</string>
+    <string name="tip_3_description">Be ready to answer common interview questions such as "Tell me about yourself," "Why are you interested in this position/company," and "What are your strengths and weaknesses." Practice your responses to these questions to articulate your thoughts clearly and confidently.</string>
+
+    <string name="interview_tip_4_title">Prepare STAR Stories</string>
+    <string name="interview_tip_4_description">Use the STAR method (Situation, Task, Action, Result) to structure your responses to behavioral interview questions. Prepare specific examples from your past experiences that highlight your skills, problem-solving abilities, and accomplishments.</string>
+
+    <string name="interview_tip_5_title">Know Your Resume</string>
+    <string name="interview_tip_5_description">Be prepared to discuss your resume in detail, including your work experience, education, skills, and achievements. Be ready to explain any gaps in employment or transitions between roles.</string>
+
+    <string name="interview_tip_6_title">Practice Non-Verbal Communication</string>
+    <string name="interview_tip_6_description">Pay attention to your body language, tone of voice, and facial expressions during the interview. Practice good posture, maintain eye contact, and use confident gestures to convey professionalism and engagement.</string>
+
+    <string name="interview_tip_7_title">Ask Questions</string>
+    <string name="interview_tip_7_description">Prepare insightful questions to ask the interviewer about the company, team dynamics, projects, opportunities for growth, or any other relevant topics. This shows your interest in the role and helps you gather important information to assess if the company is the right fit for you.</string>
+
+    <string name="interview_tip_8_title">Dress Appropriately</string>
+    <string name="interview_tip_8_description">Choose professional attire that is suitable for the company culture and industry. Dressing appropriately demonstrates respect for the interview process and reflects your professionalism.</string>
+
+    <string name="interview_tip_9_title">Arrive Early</string>
+    <string name="interview_tip_9_description">Plan to arrive at the interview location early to allow time for unexpected delays. Punctuality shows respect for the interviewer\'s time and helps you start the interview on a positive note.</string>
+
+    <string name="interview_tip_10_title">Follow-Up</string>
+    <string name="interview_tip_10_description">Send a thank-you email or note to the interviewer within 24 hours of the interview to express your appreciation for the opportunity and reiterate your interest in the position. This is also an opportunity to address any points you may have forgotten to mention during the interview.</string>
 </resources>
