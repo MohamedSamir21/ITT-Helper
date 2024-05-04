@@ -26,7 +26,7 @@
     <string name="register">Register</string>
     <string name="tips">Tips</string>
 
-    <!--  Guides for CVs  -->
+ <!--  Guides for CVs  -->
     <string name="guides_for_making_your_cv">There are some guides for making your CV</string>
 
     <string name="cv_tip_1_title">Clear Formatting</string>
@@ -72,7 +72,7 @@
     <string name="cv_tip_14_description">Keep your CV up to date with your latest experiences, skills, and achievements. Regularly review and revise it as your career progresses.</string>
 
 
-    <!--  Guides for Interviews  -->
+<!--  Guides for Interviews  -->
     <string name="there_are_some_guides_for_interviews">There are some guides for Interviews</string>
 
     <string name="interview_tip_1_title">Research the Company</string>
@@ -104,4 +104,24 @@
 
     <string name="interview_tip_10_title">Follow-Up</string>
     <string name="interview_tip_10_description">Send a thank-you email or note to the interviewer within 24 hours of the interview to express your appreciation for the opportunity and reiterate your interest in the position. This is also an opportunity to address any points you may have forgotten to mention during the interview.</string>
+
+<!--  Training  -->
+    <string name="training_banner_message">Keep up with our most recent training opportunities</string>
+    <string name="training_motivation_message">A range of training opportunities are available</string>
+    <string name="choose_one">Choose one</string>
+    <string name="on">On %1$s</string>
+    <string name="book">Book</string>
+    <string name="haven_not_built_a_skill_yet">Haven\'t built a skill yet?</string>
+    <string name="courses_you_might_like">Courses you might like</string>
+
+<!--  Courses  -->
+    <string name="what_would_you_like_to_learn_today">What would you like to learn today?</string>
+    <string name="courses">Courses</string>
+    <string name="did_not_find_the_courses_you_are_seeking">Didn\'t find the courses you are seeking?</string>
+    <string name="go_forward">Go Forward</string>
+    <string name="we_provide_you_the_events_and_workshops">We Provide You The Events And Workshops</string>
+    <string name="sharing_insights_experiences_and_expertise">Sharing insights, experiences, and expertise.</string>
+    <string name="date">Date</string>
+    <string name="location">Location</string>
+    <string name="deadline">Deadline</string>
 </resources>
