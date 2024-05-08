@@ -5,24 +5,28 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.itthelper.career_guidance_hub.presentation.navigation.BottomNavigationItem
 
 @Composable
 fun BottomNavigationBar(
     bottomNavigationItems: List<BottomNavigationItem>,
-    selectedNavigationItemIndex: Int,
     navController: NavController,
-    onUpdateSelectedNavigationItemIndex: (Int) -> Unit
+    onSelectedNavigationItemIndex: (Int) -> Unit
 ) {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
     NavigationBar {
         bottomNavigationItems.forEachIndexed { index, navigationItem ->
-            val isItemSelected = index == selectedNavigationItemIndex
+            val isItemSelected = currentRoute == bottomNavigationItems[index].route
             NavigationBarItem(
                 selected = isItemSelected,
                 onClick = {
-                    navController.navigate(bottomNavigationItems[index].screenRoute)
-                    onUpdateSelectedNavigationItemIndex(index)
+                    navController.navigate(bottomNavigationItems[index].route)
+                    onSelectedNavigationItemIndex(index)
                 },
                 icon = {
                     Icon(
@@ -31,11 +35,11 @@ fun BottomNavigationBar(
                             navigationItem.selectedIcon
                         else
                             navigationItem.unselectedIcon,
-                        contentDescription = navigationItem.title
+                        contentDescription = stringResource(id = navigationItem.titleResId)
                     )
                 },
                 label = {
-                    Text(text = navigationItem.title)
+                    Text(text = stringResource(id = navigationItem.titleResId))
                 }
             )
         }

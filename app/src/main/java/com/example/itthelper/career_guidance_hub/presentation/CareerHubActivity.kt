@@ -6,30 +6,28 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.Face
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.PlayArrow
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.itthelper.R
 import com.example.itthelper.career_guidance_hub.presentation.components.BottomNavigationBar
+import com.example.itthelper.career_guidance_hub.presentation.components.TopAppBar
 import com.example.itthelper.career_guidance_hub.presentation.navigation.BottomNavigationItem
 import com.example.itthelper.career_guidance_hub.presentation.navigation.Screen
 import com.example.itthelper.career_guidance_hub.presentation.navigation.SetupNavGraph
-import com.example.itthelper.core.ui.components.AppLogo
+import com.example.itthelper.career_guidance_hub.presentation.navigation.bottomNavigationItems
 import com.example.itthelper.core.ui.theme.ITTHelperTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,35 +38,12 @@ class CareerHubActivity : ComponentActivity() {
         setContent {
             ITTHelperTheme {
                 val navController = rememberNavController()
-                val bottomNavigationItems = listOf(
-                    BottomNavigationItem(
-                        title = "Home",
-                        screenRoute = Screen.Home.route,
-                        selectedIcon = Icons.Default.Home,
-                        unselectedIcon = Icons.Outlined.Home,
-                        hasNews = false,
-                    ),
-                    BottomNavigationItem(
-                        title = "Courses",
-                        screenRoute = Screen.Courses.route,
-                        selectedIcon = Icons.Default.PlayArrow,
-                        unselectedIcon = Icons.Outlined.PlayArrow,
-                        hasNews = false,
-                    ),
-                    BottomNavigationItem(
-                        title = "Training",
-                        screenRoute = Screen.Training.route,
-                        selectedIcon = Icons.Default.Face,
-                        unselectedIcon = Icons.Outlined.Face,
-                        hasNews = false,
-                    ),
-                )
-                var selectedNavigationItemIndex by remember {
+                var selectedNavigationItemIndex by rememberSaveable {
                     mutableIntStateOf(0)
                 }
+
                 CareerHubFeature(
                     navController = navController,
-                    selectedNavigationItemIndex = selectedNavigationItemIndex,
                     bottomNavigationItems = bottomNavigationItems
                 ) {
                     selectedNavigationItemIndex = it
@@ -79,30 +54,72 @@ class CareerHubActivity : ComponentActivity() {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CareerHubFeature(
     navController: NavHostController,
     bottomNavigationItems: List<BottomNavigationItem>,
-    selectedNavigationItemIndex: Int = 0,
     onSelectedNavigationItemIndex: (Int) -> Unit
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    var showTopAppBar by rememberSaveable {
+        mutableStateOf(true)
+    }
+    var showBottomAppBar by rememberSaveable {
+        mutableStateOf(true)
+    }
+    var showFAB by rememberSaveable {
+        mutableStateOf(true)
+    }
+    when (navBackStackEntry?.destination?.route) {
+        Screen.Profile.route -> {
+            showTopAppBar = false
+            showBottomAppBar = false
+            showFAB = false
+        }
+
+        Screen.ContactUs.route -> {
+            showTopAppBar = false
+            showBottomAppBar = false
+            showFAB = false
+        }
+
+        Screen.Feedback.route -> {
+            showTopAppBar = false
+            showBottomAppBar = false
+            showFAB = false
+        }
+
+        else -> {
+            showTopAppBar = true
+            showBottomAppBar = true
+            showFAB = true
+        }
+    }
 
     Scaffold(
         topBar = {
-            AppLogo(
-                modifier = Modifier.padding(10.dp),
-                fontSize = 25.sp
-            )
+            if (showTopAppBar)
+                TopAppBar(navController = navController)
         },
         bottomBar = {
-            BottomNavigationBar(
-                bottomNavigationItems = bottomNavigationItems,
-                selectedNavigationItemIndex = selectedNavigationItemIndex,
-                navController = navController,
-            ) { newIndex ->
-                onSelectedNavigationItemIndex(newIndex)
-            }
+            if (showBottomAppBar)
+                BottomNavigationBar(
+                    bottomNavigationItems = bottomNavigationItems,
+                    navController = navController,
+                ) { newIndex ->
+                    onSelectedNavigationItemIndex(newIndex)
+                }
+        },
+        floatingActionButton = {
+            if (showFAB)
+                FloatingActionButton(
+                    onClick = { /*TODO*/ }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.bot),
+                        contentDescription = stringResource(R.string.chat_bot)
+                    )
+                }
         }
     ) { paddingValues ->
         Column(
