@@ -10,12 +10,11 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.itthelper.career_guidance_hub.presentation.util.TabContent
 import com.example.itthelper.career_guidance_hub.presentation.util.Tabs
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -27,8 +26,14 @@ fun HomeScreen(
     val pagerState = rememberPagerState {
         state.tabs.size
     }
-    val scope = rememberCoroutineScope()
 
+    LaunchedEffect(state.selectedTabIndex) {
+        pagerState.animateScrollToPage(state.selectedTabIndex)
+    }
+    LaunchedEffect(key1 = pagerState.currentPage, key2 = pagerState.isScrollInProgress) {
+        if (!pagerState.isScrollInProgress)
+            viewModel.updateSelectedTabIndex(pagerState.currentPage)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,9 +46,6 @@ fun HomeScreen(
                     selected = index == state.selectedTabIndex,
                     onClick = {
                         viewModel.updateSelectedTabIndex(index)
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
                     },
                     text = {
                         Text(text = tabItem.title)
@@ -55,8 +57,8 @@ fun HomeScreen(
             state = pagerState,
             userScrollEnabled = true,
             modifier = Modifier.padding(10.dp)
-        ) {
-            onTabSelected(Tabs.tabs[it].tabContent)
+        ) { currentPage ->
+            onTabSelected(Tabs.tabs[currentPage].tabContent)
         }
     }
 }
