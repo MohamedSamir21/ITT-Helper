@@ -23,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -164,9 +165,9 @@ private fun TrainingMotivation(
 
 @Composable
 private fun ChooseCard() {
-    ElevatedCard(
+    OutlinedCard(
         elevation = CardDefaults.cardElevation(
-            5.dp
+            1.dp
         )
     ) {
         Text(
