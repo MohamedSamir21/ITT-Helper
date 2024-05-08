@@ -43,15 +43,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.itthelper.R
+import com.example.itthelper.career_guidance_hub.presentation.navigation.Screen
 import com.example.itthelper.career_guidance_hub.presentation.util.LargePageSize
 import com.example.itthelper.core.ui.theme.ITTHelperTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CoursesScreen(
-    state: CoursesScreenState,
-    onContactClicked: () -> Unit
+    navController: NavController,
+    state: CoursesScreenState
 ) {
     val pagerState = rememberPagerState {
         state.courses.size
@@ -90,10 +93,12 @@ fun CoursesScreen(
         )
         Button(
             modifier = Modifier.padding(start = 10.dp),
-            onClick = onContactClicked,
+            onClick = {
+                navController.navigate(Screen.ContactUs.route)
+            },
             shape = RectangleShape
         ) {
-            Text(text = "Contact Us")
+            Text(text = stringResource(id = R.string.contact_us))
         }
     }
 }
@@ -279,8 +284,8 @@ private fun CoursesScreenPreview() {
     }
     ITTHelperTheme {
         CoursesScreen(
-            state = state,
-            onContactClicked = {}
+            navController = rememberNavController(),
+            state = state
         )
     }
 }
