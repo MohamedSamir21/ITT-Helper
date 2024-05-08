@@ -25,6 +25,9 @@
     <string name="haven_not_account_yet">Haven\'t an account yet?</string>
     <string name="register">Register</string>
     <string name="tips">Tips</string>
+    <string name="home">Home</string>
+    <string name="training">Training</string>
+    <string name="chat_bot">Chat Bot</string>
 
  <!--  Guides for CVs  -->
     <string name="guides_for_making_your_cv">There are some guides for making your CV</string>
@@ -124,4 +127,51 @@
     <string name="date">Date</string>
     <string name="location">Location</string>
     <string name="deadline">Deadline</string>
+
+<!--  Profile  -->
+    <string name="profile">Profile</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="feedback">Feedback</string>
+    <string name="logout">Logout</string>
+
+<!--  Contact  -->
+    <string name="contact_with_us">Contact with us</string>
+    <string name="contact_message">If you have any questions please fell free to contact with us.</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="subject">Subject</string>
+    <string name="your_message">Your message</string>
+    <string name="send">SEND</string>
+
+<!--  Feedback  -->
+    <string name="employer">Employer</string>
+    <string name="college_student">College Student</string>
+    <string name="fresh_graduate">Fresh Graduate</string>
+    <string name="graduate_with_no_experience">Graduate with no experience</string>
+    <string name="suggestion">Suggestion</string>
+    <string name="complaint">Complaint</string>
+    <string name="adding_events_or_workshops">Adding Events Or Workshops</string>
+    <string name="adding_training_opportunity">Adding Training Opportunity</string>
+    <string name="reset">Reset</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="position">Position</string>
+    <string name="type">Type</string>
+
+<!--  Career Paths  -->
+    <string name="mediator">Mediator</string>
+    <string name="helping_communicate_with_company_owners_and_experienced_people">Helping communicate with company owners and experienced people.</string>
+    <string name="chat_bot_services">Chat bot Services</string>
+    <string name="student_assistant_to_ask_about_any_information">Student assistant to ask about any information.</string>
+    <string name="training_and_employment_opportunities">Training Opportunities</string>
+    <string name="helping_to_boost_individual_and_organizational_performance">Helping to boost individual and organizational performance.</string>
+    <string name="guides_for_cvs_and_interviews">Guides For CVs</string>
+    <string name="helping_stand_out_from_the_crowd_and_secure_a_job_interview">Helping stand out from the crowd and secure a job interview.</string>
+    <string name="virtual_employment_fair">Virtual Employment</string>
+    <string name="enabling_job_seekers_to_quickly_reach_out_to_the_employers_in_a_virtual_space">Enabling job-seekers to quickly reach out to the employers in a virtual space.</string>
+    <string name="providing_events_and_workshops">Events And Workshops</string>
+    <string name="paths">Paths</string>
+    <string name="we_help_you_to_start_your_career">We help you to start your career</string>
+    <string name="path_image">Path Image</string>
 </resources>
