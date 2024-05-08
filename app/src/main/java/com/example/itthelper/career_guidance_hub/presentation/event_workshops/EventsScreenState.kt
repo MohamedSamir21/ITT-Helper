@@ -11,5 +11,6 @@ data class Event(
     val image: Int,
     val name: String,
     val date: String,
-    val location: String
+    val location: String,
+    val deadline: String
 )

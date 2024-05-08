@@ -10,16 +10,18 @@ class EventsViewModel: ViewModel() {
         EventsScreenState(
             events = listOf(
                 Event(
-                    R.drawable.educational_resources,
+                    R.drawable.event,
                     "NSP Explore",
-                    "Date: January 31, 2024",
-                    "Location: Tanta, Al Gharbia"
+                    "25/5/2024",
+                    "Tanta, Al Gharbia",
+                    "30/4/2024"
                 ),
                 Event(
-                    R.drawable.educational_resources,
+                    R.drawable.event,
                     "DevFest",
-                    "Date: February 25, 2024",
-                    "Location: Shibin-Elkom, Menoufia"
+                    "25/3/2024",
+                    "Shibin-Elkom, Menoufia",
+                    "30/4/2024"
                 )
             )
         )
