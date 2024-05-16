@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,11 +26,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,15 +49,41 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.itthelper.R
+import com.example.itthelper.career_guidance_hub.domain.model.Course
+import com.example.itthelper.career_guidance_hub.presentation.components.RetryComponent
 import com.example.itthelper.career_guidance_hub.presentation.navigation.Screen
 import com.example.itthelper.career_guidance_hub.presentation.util.LargePageSize
+import com.example.itthelper.career_guidance_hub.presentation.util.UiText
 import com.example.itthelper.core.ui.theme.ITTHelperTheme
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CoursesScreen(
     navController: NavController,
-    state: CoursesScreenState
+    coursesViewModel: CoursesViewModel,
+    onUnauthorized: (UiText) -> Unit
+) {
+    val viewModel = remember {
+        coursesViewModel
+    }
+
+    viewModel.unauthorizedResult.collectAsState(initial = null).value?.let {
+        onUnauthorized(it.message)
+    }
+    CoursesContent(
+        navController = navController,
+        state = viewModel.state.value,
+        onRetryClicked = {
+            viewModel.onEvent(CoursesScreenEvent.Retry)
+        }
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun CoursesContent(
+    navController: NavController,
+    state: CoursesScreenState,
+    onRetryClicked: () -> Unit
 ) {
     val pagerState = rememberPagerState {
         state.courses.size
@@ -72,33 +101,50 @@ fun CoursesScreen(
             title = stringResource(R.string.what_would_you_like_to_learn_today)
         )
         Spacer(modifier = Modifier.padding(vertical = 20.dp))
-        Text(
-            text = stringResource(R.string.courses),
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(start = 20.dp)
-        )
-        CoursePager(
-            modifier = Modifier
-                .padding(5.dp)
-                .fillMaxWidth(),
-            pagerState = pagerState,
-            courses = state.courses,
-            onForwardClicked = {}
-        )
-        Spacer(modifier = Modifier.padding(vertical = 20.dp))
-        Text(
-            text = stringResource(R.string.did_not_find_the_courses_you_are_seeking),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(start = 10.dp, bottom = 5.dp)
-        )
-        Button(
-            modifier = Modifier.padding(start = 10.dp),
-            onClick = {
-                navController.navigate(Screen.ContactUs.route)
-            },
-            shape = RectangleShape
-        ) {
-            Text(text = stringResource(id = R.string.contact_us))
+        if (state.isLoading)
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        if (state.error != null) {
+            RetryComponent(
+                modifier = Modifier.padding(10.dp),
+                message = state.error.asString(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                onRetryClicked = onRetryClicked
+            )
+        }
+        if (state.courses.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.courses),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(start = 20.dp)
+            )
+            CoursePager(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth(),
+                pagerState = pagerState,
+                courses = state.courses,
+                onForwardClicked = {}
+            )
+            Spacer(modifier = Modifier.padding(vertical = 20.dp))
+            Text(
+                text = stringResource(R.string.did_not_find_the_courses_you_are_seeking),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(start = 10.dp, bottom = 5.dp)
+            )
+            Button(
+                modifier = Modifier.padding(start = 10.dp),
+                onClick = {
+                    navController.navigate(Screen.ContactUs.route)
+                },
+                shape = RectangleShape
+            ) {
+                Text(text = stringResource(id = R.string.contact_us))
+            }
         }
     }
 }
@@ -181,8 +227,8 @@ fun CourseCard(
         shape = RectangleShape
     ) {
         Image(
-            painter = painterResource(id = courses[pageIndex].thumbnail),
-            contentDescription = courses[pageIndex].courseName,
+            painter = painterResource(id = R.drawable.play),
+            contentDescription = courses[pageIndex].name,
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .padding(10.dp)
@@ -203,11 +249,13 @@ fun CourseCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = courses[pageIndex].courseName,
+                modifier = Modifier.weight(.8f),
+                text = courses[pageIndex].name,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.secondary
             )
             Button(
+                modifier = Modifier.weight(.2f),
                 onClick = onForwardClicked,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.inversePrimary,
@@ -241,8 +289,7 @@ private fun CoursePagerPreview() {
     ITTHelperTheme {
         val courses = listOf(
             Course(
-                thumbnail = R.drawable.play,
-                courseName = "Course"
+                name = "Course name"
             )
         )
         CoursePager(
@@ -259,19 +306,16 @@ private fun CoursePagerPreview() {
     showBackground = true
 )
 @Composable
-private fun CoursesScreenPreview() {
+private fun CoursesContentPreview() {
     val courses = listOf(
         Course(
-            thumbnail = R.drawable.play,
-            courseName = "Course"
+            name = "Course name"
         ),
         Course(
-            thumbnail = R.drawable.play,
-            courseName = "Course"
+            name = "Course name"
         ),
         Course(
-            thumbnail = R.drawable.play,
-            courseName = "Course"
+            name = "Course name"
         )
     )
 
@@ -283,9 +327,10 @@ private fun CoursesScreenPreview() {
         )
     }
     ITTHelperTheme {
-        CoursesScreen(
+        CoursesContent(
             navController = rememberNavController(),
-            state = state
+            state = state,
+            onRetryClicked = {}
         )
     }
 }
