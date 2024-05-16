@@ -2,6 +2,7 @@ package com.example.itthelper.career_guidance_hub.presentation.event_workshops
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,11 +13,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,12 +34,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.itthelper.R
+import com.example.itthelper.career_guidance_hub.domain.model.Event
 import com.example.itthelper.career_guidance_hub.presentation.components.InfoItem
+import com.example.itthelper.career_guidance_hub.presentation.components.RetryComponent
+import com.example.itthelper.career_guidance_hub.presentation.util.UiText
 import com.example.itthelper.core.ui.theme.ITTHelperTheme
 
 @Composable
 fun EventsScreen(
-    state: EventsScreenState
+    eventsViewModel: EventsViewModel,
+    onUnauthorized: (UiText) -> Unit
+) {
+    val viewModel = remember {
+        eventsViewModel
+    }
+
+    viewModel.unauthorizedResult.collectAsState(initial = null).value?.let {
+        onUnauthorized(it.message)
+    }
+    EventsContent(
+        state = viewModel.state.value,
+        onRetryClicked = { viewModel.onEvent(EventsScreenEvent.Retry) }
+    )
+}
+
+@Composable
+fun EventsContent(
+    state: EventsScreenState,
+    onRetryClicked: () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -64,6 +89,29 @@ fun EventsScreen(
             )
             HorizontalDivider()
         }
+
+        item {
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
+        item {
+            if (state.error != null) {
+                RetryComponent(
+                    modifier = Modifier.padding(top = 40.dp),
+                    message = state.error.asString(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    onRetryClicked = onRetryClicked
+                )
+            }
+        }
         items(state.events) { event ->
             EventCard(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
@@ -83,7 +131,7 @@ fun EventCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Image(
-            painter = painterResource(id = event.image),
+            painter = painterResource(id = R.drawable.event),
             contentDescription = event.name,
             contentScale = ContentScale.Fit,
             modifier = Modifier
@@ -120,9 +168,8 @@ fun EventCard(
                 color = MaterialTheme.colorScheme.tertiary
             )
         }
-        InfoItem(infoTitle = stringResource(R.string.date), infoValue = event.date)
+        InfoItem(infoTitle = stringResource(R.string.time), infoValue = event.time)
         InfoItem(infoTitle = stringResource(R.string.location), infoValue = event.location)
-        InfoItem(infoTitle = stringResource(R.string.deadline), infoValue = event.deadline)
         Button(
             onClick = { /*TODO*/ },
             shape = RoundedCornerShape(5.dp),
@@ -144,11 +191,9 @@ private fun EventCardPreview() {
     ITTHelperTheme {
         EventCard(
             event = Event(
-                image = R.drawable.event,
                 name = "Android Track",
-                date = "22/8/2024",
-                location = "Cairo",
-                deadline = "30/4/2024"
+                time = "22/8/2024",
+                location = "Cairo"
             )
         )
     }
@@ -158,23 +203,24 @@ private fun EventCardPreview() {
     showBackground = true
 )
 @Composable
-private fun EventsScreenPreview() {
+private fun EventsContentPreview() {
     ITTHelperTheme {
         val state by remember {
             mutableStateOf(
                 EventsScreenState(
                     listOf(
                         Event(
-                            image = R.drawable.event,
                             name = "Dev",
-                            date = "22/4/2024",
-                            location = "Cairo",
-                            deadline = "22/5/2024"
+                            time = "22/4/2024",
+                            location = "Cairo"
                         )
                     )
                 )
             )
         }
-        EventsScreen(state = state)
+        EventsContent(
+            state = state,
+            onRetryClicked = {}
+        )
     }
 }
