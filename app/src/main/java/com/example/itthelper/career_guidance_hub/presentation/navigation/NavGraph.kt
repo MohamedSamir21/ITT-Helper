@@ -26,14 +26,17 @@ import com.example.itthelper.career_guidance_hub.presentation.home.HomeViewModel
 import com.example.itthelper.career_guidance_hub.presentation.interviews_guide.InterviewGuideScreen
 import com.example.itthelper.career_guidance_hub.presentation.interviews_guide.InterviewGuideViewModel
 import com.example.itthelper.career_guidance_hub.presentation.profile.ProfileScreen
+import com.example.itthelper.career_guidance_hub.presentation.profile.ProfileViewModel
 import com.example.itthelper.career_guidance_hub.presentation.training.TrainingScreen
 import com.example.itthelper.career_guidance_hub.presentation.training.TrainingViewModel
 import com.example.itthelper.career_guidance_hub.presentation.util.TabContent
+import com.example.itthelper.career_guidance_hub.presentation.util.UiText
 
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    startDestination: String
+    startDestination: String,
+    onUnauthorized: (UiText) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -58,7 +61,8 @@ fun SetupNavGraph(
             ) {
                 SetupTabs(
                     navController = navController,
-                    tabContent = it
+                    tabContent = it,
+                    onUnauthorized = { uiText -> onUnauthorized(uiText) }
                 )
             }
         }
@@ -68,7 +72,8 @@ fun SetupNavGraph(
             val viewModel: CoursesViewModel = hiltViewModel()
             CoursesScreen(
                 navController = navController,
-                state = viewModel.state.value
+                coursesViewModel = viewModel,
+                onUnauthorized = { onUnauthorized(it) }
             )
         }
         composable(
@@ -76,16 +81,18 @@ fun SetupNavGraph(
         ) {
             val viewModel: TrainingViewModel = hiltViewModel()
             TrainingScreen(
-                state = viewModel.state.value,
-                onBookClicked = {},
-                onForwardClicked = {}
+                trainingViewModel = viewModel,
+                onUnauthorized = { onUnauthorized(it) }
             )
         }
         composable(
             route = Screen.Profile.route
         ) {
+            val viewModel: ProfileViewModel = hiltViewModel()
             ProfileScreen(
-                navController = navController
+                navController = navController,
+                profileViewModel = viewModel,
+                onLogout = onUnauthorized
             )
         }
         composable(
@@ -112,19 +119,25 @@ fun SetupNavGraph(
 @Composable
 fun SetupTabs(
     navController: NavHostController,
-    tabContent: TabContent
+    tabContent: TabContent,
+    onUnauthorized: (UiText) -> Unit
 ) {
     when (tabContent) {
         TabContent.CareerPath -> {
-            val viewModel: CareerViewModel= hiltViewModel()
+            val viewModel: CareerViewModel = hiltViewModel()
             CareerScreen(
                 navController = navController,
-                careerViewModel = viewModel
+                careerViewModel = viewModel,
+                onUnauthorized = { onUnauthorized(it) }
             )
         }
+
         TabContent.EventsWorkshops -> {
             val viewModel: EventsViewModel = hiltViewModel()
-            EventsScreen(viewModel.state.value)
+            EventsScreen(
+                eventsViewModel = viewModel,
+                onUnauthorized = { onUnauthorized(it) }
+            )
         }
 
         TabContent.CvsTips -> {
