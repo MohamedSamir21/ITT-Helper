@@ -14,18 +14,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,18 +45,48 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.itthelper.R
-import com.example.itthelper.career_guidance_hub.presentation.courses.Course
+import com.example.itthelper.career_guidance_hub.domain.model.Course
+import com.example.itthelper.career_guidance_hub.domain.model.TrainingProgram
+import com.example.itthelper.career_guidance_hub.presentation.components.RetryComponent
 import com.example.itthelper.career_guidance_hub.presentation.courses.CoursePager
 import com.example.itthelper.career_guidance_hub.presentation.util.LargePageSize
 import com.example.itthelper.career_guidance_hub.presentation.util.SmallPageSize
+import com.example.itthelper.career_guidance_hub.presentation.util.UiText
 import com.example.itthelper.core.ui.theme.ITTHelperTheme
+
+@Composable
+fun TrainingScreen(
+    trainingViewModel: TrainingViewModel,
+    onUnauthorized: (UiText) -> Unit
+) {
+    val viewModel = remember {
+        trainingViewModel
+    }
+
+    viewModel.unauthorizedResult.collectAsState(initial = null).value.let {
+        it?.message?.let { uiText -> onUnauthorized(uiText) }
+    }
+    TrainingContent(
+        state = viewModel.state.value,
+        onBookClicked = { /*TODO*/ },
+        onForwardClicked = { /*TODO*/ },
+        onProgramsRetryClicked = {
+            viewModel.onEvent(TrainingScreenEvent.RetryLoadingPrograms)
+        },
+        onCoursesRetryClicked = {
+            viewModel.onEvent(TrainingScreenEvent.RetryLoadingCourses)
+        }
+    )
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TrainingScreen(
+fun TrainingContent(
     state: TrainingScreenState,
     onBookClicked: () -> Unit,
-    onForwardClicked: () -> Unit
+    onForwardClicked: () -> Unit,
+    onProgramsRetryClicked: () -> Unit,
+    onCoursesRetryClicked: () -> Unit
 ) {
     val trainingPagerState = rememberPagerState {
         state.programs.size
@@ -72,24 +105,22 @@ fun TrainingScreen(
             text = stringResource(R.string.training_banner_message)
         )
         HorizontalDivider()
-        TrainingMotivation(
-            modifier = Modifier.padding(top = 40.dp, start = 5.dp, end = 5.dp)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 30.dp, start = 5.dp, end = 5.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            ChooseCard()
+        TrainingMotivation(modifier = Modifier.padding(top = 40.dp, start = 5.dp, end = 5.dp))
+        ChooseCard()
+        if (state.areProgramsLoading) {
+            ProgressIndicator()
         }
-        HorizontalPager(
-            state = trainingPagerState,
-            modifier = Modifier.fillMaxWidth(),
-            pageSize = LargePageSize
-        ) { currentIndex ->
-            TrainingCard(
-                program = state.programs[currentIndex],
+        if (state.errorOfLoadingPrograms != null) {
+            RetryComponent(
+                modifier = Modifier.padding(10.dp),
+                message = state.errorOfLoadingPrograms.asString(),
+                onRetryClicked = onProgramsRetryClicked
+            )
+        }
+        if (state.programs.isNotEmpty()) {
+            TrainingPager(
+                trainingPagerState = trainingPagerState,
+                programs = state.programs,
                 onBookClicked = onBookClicked
             )
         }
@@ -106,16 +137,28 @@ fun TrainingScreen(
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(start = 10.dp, top = 5.dp)
         )
-        CoursePager(
-            modifier = Modifier
-                .height(240.dp)
-                .padding(5.dp),
-            courses = state.courses,
-            pagerState = coursePagerState,
-            imageSize = 150.dp,
-            customPageSize = SmallPageSize,
-            onForwardClicked = onForwardClicked
-        )
+        if (state.areCoursesLoading) {
+            ProgressIndicator()
+        }
+        if (state.errorOfLoadingCourses != null) {
+            RetryComponent(
+                modifier = Modifier.padding(10.dp),
+                message = state.errorOfLoadingCourses.asString(),
+                onRetryClicked = onCoursesRetryClicked
+            )
+        }
+        if (state.courses.isNotEmpty()) {
+            CoursePager(
+                modifier = Modifier
+                    .height(240.dp)
+                    .padding(5.dp),
+                courses = state.courses,
+                pagerState = coursePagerState,
+                imageSize = 150.dp,
+                customPageSize = SmallPageSize,
+                onForwardClicked = onForwardClicked
+            )
+        }
     }
 }
 
@@ -165,18 +208,56 @@ private fun TrainingMotivation(
 
 @Composable
 private fun ChooseCard() {
-    OutlinedCard(
-        elevation = CardDefaults.cardElevation(
-            1.dp
-        )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp, start = 5.dp, end = 5.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = stringResource(R.string.choose_one),
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier
-                .padding(10.dp),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.secondary
+        OutlinedCard(
+            elevation = CardDefaults.cardElevation(
+                1.dp
+            )
+        ) {
+            Text(
+                text = stringResource(R.string.choose_one),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .padding(10.dp),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProgressIndicator() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun TrainingPager(
+    trainingPagerState: PagerState,
+    programs: List<TrainingProgram>,
+    onBookClicked: () -> Unit
+) {
+    HorizontalPager(
+        state = trainingPagerState,
+        modifier = Modifier.fillMaxWidth(),
+        pageSize = LargePageSize
+    ) { currentIndex ->
+        TrainingCard(
+            program = programs[currentIndex],
+            onBookClicked = onBookClicked
         )
     }
 }
@@ -200,7 +281,7 @@ private fun TrainingCard(
     ) {
         Box {
             Image(
-                painter = painterResource(id = program.image),
+                painter = painterResource(id = R.drawable.intern),
                 contentDescription = program.name,
                 modifier = Modifier
                     .fillMaxSize()
@@ -246,7 +327,7 @@ private fun TrainingCardTopRow(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = stringResource(R.string.on, program.date),
+            text = stringResource(R.string.on, program.time),
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .clip(RoundedCornerShape(bottomEnd = 10.dp))
@@ -282,13 +363,15 @@ private fun TrainingCardBottomCard(
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center
             )
-            Text(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                text = program.company,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
-                textAlign = TextAlign.Center
-            )
+            program.company?.let {
+                Text(
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.secondary,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
         Button(
             onClick = onBookClicked,
@@ -323,9 +406,8 @@ private fun TrainingCardPreview() {
     val state by remember {
         mutableStateOf(
             TrainingProgram(
-                image = R.drawable.intern,
                 name = "Training 1",
-                date = "10:45:00",
+                time = "10:45:00",
                 place = "Alex",
                 company = "Google"
             )
@@ -347,31 +429,27 @@ private fun TrainingCardPreview() {
     showBackground = true
 )
 @Composable
-private fun TrainingScreenPreview() {
+private fun TrainingContentPreview() {
     val state by remember {
         mutableStateOf(
             TrainingScreenState(
                 listOf(
                     TrainingProgram(
-                        image = R.drawable.intern,
                         name = "Training 1",
-                        date = "10:45:00",
+                        time = "10:45:00",
                         place = "Alex",
                         company = "Google"
                     )
                 ),
                 courses = listOf(
                     Course(
-                        thumbnail = R.drawable.play,
-                        courseName = "Course"
+                        name = "Course"
                     ),
                     Course(
-                        thumbnail = R.drawable.play,
-                        courseName = "Course"
+                        name = "Course"
                     ),
                     Course(
-                        thumbnail = R.drawable.play,
-                        courseName = "Course"
+                        name = "Course"
                     )
                 )
             )
@@ -379,10 +457,12 @@ private fun TrainingScreenPreview() {
     }
 
     ITTHelperTheme {
-        TrainingScreen(
+        TrainingContent(
             state = state,
             onBookClicked = {},
-            onForwardClicked = {}
+            onForwardClicked = {},
+            onProgramsRetryClicked = {},
+            onCoursesRetryClicked = {}
         )
     }
 }
