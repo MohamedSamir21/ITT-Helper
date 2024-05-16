@@ -26,12 +26,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -50,7 +52,10 @@ import androidx.compose.ui.util.lerp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.itthelper.R
+import com.example.itthelper.career_guidance_hub.domain.model.CareerPath
+import com.example.itthelper.career_guidance_hub.presentation.components.RetryComponent
 import com.example.itthelper.career_guidance_hub.presentation.navigation.Screen
+import com.example.itthelper.career_guidance_hub.presentation.util.UiText
 import com.example.itthelper.core.ui.components.AppLogo
 import com.example.itthelper.core.ui.theme.ITTHelperTheme
 import kotlinx.coroutines.delay
@@ -60,21 +65,30 @@ import kotlin.math.absoluteValue
 @Composable
 fun CareerScreen(
     navController: NavController,
-    careerViewModel: CareerViewModel
+    careerViewModel: CareerViewModel,
+    onUnauthorized: (UiText) -> Unit
 ) {
     val viewModel = remember {
         careerViewModel
     }
+
+    viewModel.unauthorizedResult.collectAsState(initial = null).value.let {
+        it?.message?.let { uiText -> onUnauthorized(uiText) }
+    }
     CareerContent(
         navController = navController,
-        state = viewModel.state.value
+        state = viewModel.state.value,
+        onRetryClicked = {
+            viewModel.onEvent(CareerScreenEvent.Retry)
+        }
     )
 }
 
 @Composable
 fun CareerContent(
     navController: NavController,
-    state: CareerScreenState
+    state: CareerScreenState,
+    onRetryClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -87,7 +101,27 @@ fun CareerContent(
         )
         Spacer(modifier = Modifier.padding(vertical = 20.dp))
         PathsText()
-        GalleryHorizontalPager(paths = state.paths)
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        if (state.error != null) {
+            RetryComponent(
+                modifier = Modifier.padding(10.dp),
+                message = state.error.asString(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                onRetryClicked = onRetryClicked
+            )
+        }
+        if (state.paths.isNotEmpty()) {
+            GalleryHorizontalPager(paths = state.paths)
+        }
     }
 }
 
@@ -151,7 +185,7 @@ private fun PathsText() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun GalleryHorizontalPager(
-    paths: List<String>
+    paths: List<CareerPath>
 ) {
 
     val pagerState = rememberPagerState(pageCount = {
@@ -168,7 +202,7 @@ private fun GalleryHorizontalPager(
         PathCard(
             pagerState = pagerState,
             pageIndex = page,
-            pathName = paths[page]
+            pathName = paths[page].name
         )
     }
 }
@@ -375,9 +409,9 @@ private fun GalleryHorizontalPagerPreview() {
     ITTHelperTheme {
         val state = CareerScreenState(
             paths = listOf(
-                "path 1",
-                "path 2",
-                "path 3",
+                CareerPath("path 1"),
+                CareerPath("path 2"),
+                CareerPath("path 3")
             ),
             careerBannerItems = CareerBanner.items
         )
@@ -394,16 +428,17 @@ private fun CareerContentPreview() {
     ITTHelperTheme {
         val state = CareerScreenState(
             paths = listOf(
-                "path 1",
-                "path 2",
-                "path 3",
+                CareerPath("path 1"),
+                CareerPath("path 2"),
+                CareerPath("path 3")
             ),
             careerBannerItems = CareerBanner.items
         )
 
         CareerContent(
             navController = rememberNavController(),
-            state = state
+            state = state,
+            onRetryClicked = {}
         )
     }
 }
