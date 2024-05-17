@@ -2,7 +2,6 @@ package com.example.itthelper.authentication.presentation
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -23,7 +22,6 @@ class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val viewModel: AuthViewModel by viewModels()
         installSplashScreen().setKeepOnScreenCondition {
-            Log.d("AuthActivityTest", viewModel.isLoading.value.toString())
             viewModel.isLoading.value
         }
         super.onCreate(savedInstanceState)

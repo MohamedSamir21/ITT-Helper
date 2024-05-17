@@ -1,4 +1,4 @@
-package com.example.itthelper.core.data.local
+package com.example.itthelper.core.data.source.local
 
 interface DataStoreRepository {
     suspend fun saveOnWelcomeDone(done: Boolean)

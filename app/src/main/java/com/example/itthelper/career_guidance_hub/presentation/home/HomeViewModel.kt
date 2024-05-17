@@ -1,21 +1,20 @@
 package com.example.itthelper.career_guidance_hub.presentation.home
 
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.itthelper.career_guidance_hub.presentation.util.Tabs
 
-class HomeViewModel: ViewModel() {
-    var selectedNavigationItemIndex by mutableStateOf(0)
-        private set
-    var selectedTabIndex by mutableStateOf(0)
-        private set
+class HomeViewModel : ViewModel() {
+    private val _state = mutableStateOf(
+        HomeScreenState(
+            tabs = Tabs.tabs
+        )
+    )
+    val state: State<HomeScreenState>
+        get() = _state
 
-    fun updateSelectedIndex(newSelectedIndex: Int){
-        selectedNavigationItemIndex = newSelectedIndex
-    }
-
-    fun updateSelectedTabIndex(newSelectedTabIndex: Int){
-        selectedTabIndex = newSelectedTabIndex
+    fun updateSelectedTabIndex(newIndex: Int) {
+        _state.value = state.value.copy(selectedTabIndex = newIndex)
     }
 }

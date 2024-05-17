@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -296,7 +295,6 @@ private fun AgreementText(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhoneNumberTextField(
     modifier: Modifier = Modifier,

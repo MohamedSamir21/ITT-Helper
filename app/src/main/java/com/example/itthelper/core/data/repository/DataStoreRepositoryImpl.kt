@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.itthelper.core.data.local.DataStoreRepository
+import com.example.itthelper.core.data.source.local.DataStoreRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 

@@ -1,5 +1,6 @@
 package com.example.itthelper.authentication.data.repository
 
+import android.util.Log
 import com.example.itthelper.authentication.data.remote.AuthenticationApi
 import com.example.itthelper.authentication.data.remote.LoginRequest
 import com.example.itthelper.authentication.data.remote.RegisterRequest
@@ -7,7 +8,7 @@ import com.example.itthelper.authentication.domain.model.LoginUserData
 import com.example.itthelper.authentication.domain.model.RegisterUserData
 import com.example.itthelper.authentication.domain.repository.AuthRepository
 import com.example.itthelper.authentication.domain.result.AuthResult
-import com.example.itthelper.core.data.local.DataStoreRepository
+import com.example.itthelper.core.data.source.local.DataStoreRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -58,6 +59,7 @@ class AuthRepositoryImpl(
                     )
                 )
             } catch (ex: HttpException) {
+                Log.d("AuthRepositoryImpl", ex.message.toString())
                 // Provide the appropriate Http error codes handling here according to the backend
                 when (ex.code()) {
                     401 -> AuthResult.Unauthorized()

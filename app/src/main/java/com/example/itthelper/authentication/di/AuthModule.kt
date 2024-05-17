@@ -7,12 +7,13 @@ import com.example.itthelper.authentication.domain.validation.EmailValidator
 import com.example.itthelper.authentication.domain.validation.PhoneValidator
 import com.example.itthelper.authentication.presentation.util.EmailValidatorImpl
 import com.example.itthelper.authentication.presentation.util.PhoneValidatorImpl
-import com.example.itthelper.core.data.local.DataStoreRepository
+import com.example.itthelper.core.data.source.local.DataStoreRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -21,7 +22,7 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideAuthenticationApi(retrofit: Retrofit): AuthenticationApi {
+    fun provideAuthenticationApi(@Named("without_interceptors") retrofit: Retrofit): AuthenticationApi {
         return retrofit.create(AuthenticationApi::class.java)
     }
 
