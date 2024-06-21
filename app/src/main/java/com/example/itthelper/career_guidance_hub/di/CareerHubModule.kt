@@ -1,16 +1,19 @@
 package com.example.itthelper.career_guidance_hub.di
 
 import com.example.itthelper.career_guidance_hub.data.repository.CareerPathRepositoryImpl
+import com.example.itthelper.career_guidance_hub.data.repository.ContactUsRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.repository.CourseRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.repository.EventRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.repository.LogoutRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.repository.TrainingProgramRepositoryImpl
-import com.example.itthelper.career_guidance_hub.data.source.remote.CareerPathApi
-import com.example.itthelper.career_guidance_hub.data.source.remote.CourseApi
-import com.example.itthelper.career_guidance_hub.data.source.remote.EventApi
-import com.example.itthelper.career_guidance_hub.data.source.remote.LogoutApi
-import com.example.itthelper.career_guidance_hub.data.source.remote.TrainingProgramApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.CareerPathApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.ContactUsApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.CourseApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.EventApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.LogoutApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.TrainingProgramApi
 import com.example.itthelper.career_guidance_hub.domain.repository.CareerPathRepository
+import com.example.itthelper.career_guidance_hub.domain.repository.ContactUsRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.CourseRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.EventRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.LogoutRepository
@@ -103,4 +106,23 @@ object CareerHubModule {
     ): LogoutRepository {
         return LogoutRepositoryImpl(logoutApi, tokenRepository, dataStore)
     }
+
+    @Provides
+    @Singleton
+    fun provideContactUsApi(retrofit: Retrofit): ContactUsApi {
+        return retrofit.create(ContactUsApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideContactUsRepository(
+        contactUsApi: ContactUsApi,
+        dataStore: DataStoreRepository
+    ): ContactUsRepository {
+        return ContactUsRepositoryImpl(
+            contactUsApi,
+            dataStore
+        )
+    }
+
 }

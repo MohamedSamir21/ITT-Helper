@@ -1,5 +1,6 @@
 package com.example.itthelper.career_guidance_hub.presentation.contact
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,11 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,18 +29,24 @@ import com.example.itthelper.career_guidance_hub.presentation.components.EmailTe
 import com.example.itthelper.career_guidance_hub.presentation.components.MessageTextField
 import com.example.itthelper.career_guidance_hub.presentation.components.NameTextField
 import com.example.itthelper.career_guidance_hub.presentation.components.PhoneTextField
+import com.example.itthelper.career_guidance_hub.presentation.components.ResultDialog
 import com.example.itthelper.career_guidance_hub.presentation.components.SendButton
+import com.example.itthelper.career_guidance_hub.presentation.navigation.Screen
+import com.example.itthelper.career_guidance_hub.presentation.util.UiText
 import com.example.itthelper.core.ui.theme.ITTHelperTheme
 
 @Composable
 fun ContactScreen(
     navController: NavController,
-    contactViewModel: ContactViewModel
+    contactViewModel: ContactViewModel,
+    onUnauthorized: (UiText) -> Unit
 ) {
     val viewModel: ContactViewModel = remember {
         contactViewModel
     }
-
+    viewModel.unauthorizedResult.collectAsState(initial = null).value?.let {
+        onUnauthorized(it.message)
+    }
     ContactContent(
         navController = navController,
         state = viewModel.state.value,
@@ -51,6 +60,7 @@ fun ContactContent(
     state: ContactScreenState,
     onEvent: (ContactScreenEvent) -> Unit
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,6 +70,28 @@ fun ContactContent(
         HorizontalDivider(modifier = Modifier.padding(20.dp))
         ContactMessage()
         ContactForm(state) { onEvent(it) }
+
+        if (state.showResultDialog) {
+            val messageTitle = state.dialogTitle?.asString()
+            val messageBody = state.dialogBody.asString()
+            messageTitle?.let {
+                ResultDialog(
+                    messageTitle = it,
+                    messageBody = messageBody,
+                    isSuccessful = it == stringResource(id = R.string.success),
+                    contentDescription = messageBody,
+                    onConfirmedClicked = {
+                        navController.popBackStack(Screen.Home.route, false)
+                        onEvent(ContactScreenEvent.HideResultDialog)
+                    },
+                    onDismissedClicked = {
+                        onEvent(ContactScreenEvent.HideResultDialog)
+                    }
+                ) {
+                    onEvent(ContactScreenEvent.HideResultDialog)
+                }
+            }
+        }
     }
 }
 
@@ -154,14 +186,25 @@ private fun ContactForm(
                 )
             )
         }
-        SendButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 20.dp)
-        ) {
-            onEvent(
-                ContactScreenEvent.Send
-            )
+        if (state.isSending) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            SendButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 20.dp)
+            ) {
+                onEvent(
+                    ContactScreenEvent.Send
+                )
+            }
         }
     }
 }

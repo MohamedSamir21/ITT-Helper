@@ -188,5 +188,7 @@
     <string name="unknown_error">Unknown error</string>
     <string name="are_you_sure_you_want_to_logout">Are you sure you want to logout?</string>
     <string name="logging_out">Logging out...</string>
+    <string name="success">Success</string>
+    <string name="failure">Failure</string>
 
 </resources>

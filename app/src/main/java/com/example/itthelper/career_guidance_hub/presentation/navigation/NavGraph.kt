@@ -101,7 +101,8 @@ fun SetupNavGraph(
             val viewModel: ContactViewModel = hiltViewModel()
             ContactScreen(
                 navController = navController,
-                contactViewModel = viewModel
+                contactViewModel = viewModel,
+                onUnauthorized = { onUnauthorized(it) }
             )
         }
         composable(
@@ -110,7 +111,10 @@ fun SetupNavGraph(
             val viewModel: FeedbackViewModel = hiltViewModel()
             FeedbackScreen(
                 navController = navController,
-                feedbackViewModel = viewModel
+                feedbackViewModel = viewModel,
+                onUnauthorized = {
+                    onUnauthorized(it)
+                }
             )
         }
     }
