@@ -1,7 +1,7 @@
 package com.example.itthelper.career_guidance_hub.data.repository
 
 import com.example.itthelper.career_guidance_hub.data.mapper.toDomainEvents
-import com.example.itthelper.career_guidance_hub.data.source.remote.EventApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.EventApi
 import com.example.itthelper.career_guidance_hub.domain.model.Event
 import com.example.itthelper.career_guidance_hub.domain.repository.EventRepository
 import com.example.itthelper.core.data.network.exception.NoConnectivityException

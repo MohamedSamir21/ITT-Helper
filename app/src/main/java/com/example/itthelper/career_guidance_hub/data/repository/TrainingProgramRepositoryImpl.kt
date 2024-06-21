@@ -2,7 +2,7 @@ package com.example.itthelper.career_guidance_hub.data.repository
 
 import com.example.itthelper.career_guidance_hub.data.model.CompanyEntity
 import com.example.itthelper.career_guidance_hub.data.model.TrainingProgramEntity
-import com.example.itthelper.career_guidance_hub.data.source.remote.TrainingProgramApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.TrainingProgramApi
 import com.example.itthelper.career_guidance_hub.domain.model.TrainingProgram
 import com.example.itthelper.career_guidance_hub.domain.repository.TrainingProgramRepository
 import com.example.itthelper.core.data.network.exception.NoConnectivityException

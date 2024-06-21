@@ -1,7 +1,7 @@
 package com.example.itthelper.career_guidance_hub.data.repository
 
 import com.example.itthelper.career_guidance_hub.data.mapper.toDomainCourses
-import com.example.itthelper.career_guidance_hub.data.source.remote.CourseApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.CourseApi
 import com.example.itthelper.career_guidance_hub.domain.model.Course
 import com.example.itthelper.career_guidance_hub.domain.repository.CourseRepository
 import com.example.itthelper.core.data.network.exception.NoConnectivityException

@@ -1,6 +1,6 @@
 package com.example.itthelper.career_guidance_hub.data.repository
 
-import com.example.itthelper.career_guidance_hub.data.source.remote.LogoutApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.LogoutApi
 import com.example.itthelper.career_guidance_hub.domain.repository.LogoutRepository
 import com.example.itthelper.core.data.network.exception.NoConnectivityException
 import com.example.itthelper.core.data.repository.TokenRepository

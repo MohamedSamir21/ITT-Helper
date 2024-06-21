@@ -7,4 +7,5 @@ sealed class Screen(val route: String) {
     object Profile: Screen(route = "profile")
     object ContactUs: Screen(route = "contact_us")
     object Feedback: Screen(route = "feedback")
+    object ChatBot: Screen(route = "Chat_bot")
 }

@@ -11,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.itthelper.career_guidance_hub.presentation.career_path.CareerScreen
 import com.example.itthelper.career_guidance_hub.presentation.career_path.CareerViewModel
+import com.example.itthelper.career_guidance_hub.presentation.chat_bot.ChatBotScreen
+import com.example.itthelper.career_guidance_hub.presentation.chat_bot.ChatBotViewModel
 import com.example.itthelper.career_guidance_hub.presentation.contact.ContactScreen
 import com.example.itthelper.career_guidance_hub.presentation.contact.ContactViewModel
 import com.example.itthelper.career_guidance_hub.presentation.courses.CoursesScreen
@@ -115,6 +117,15 @@ fun SetupNavGraph(
                 onUnauthorized = {
                     onUnauthorized(it)
                 }
+            )
+        }
+        composable(
+            route = Screen.ChatBot.route
+        ) {
+            val viewModel: ChatBotViewModel = hiltViewModel()
+            ChatBotScreen(
+                navController = navController,
+                chatBotViewModel = viewModel
             )
         }
     }

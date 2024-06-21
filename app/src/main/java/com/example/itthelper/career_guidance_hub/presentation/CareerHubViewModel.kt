@@ -42,7 +42,8 @@ class CareerHubViewModel : ViewModel() {
         when (route) {
             Screen.Profile.route,
             Screen.ContactUs.route,
-            Screen.Feedback.route -> hideAppBarsAndFAB()
+            Screen.Feedback.route,
+            Screen.ChatBot.route -> hideAppBarsAndFAB()
 
             else -> showAppBarsAndFAB()
         }

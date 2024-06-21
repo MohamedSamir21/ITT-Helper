@@ -71,7 +71,7 @@ object AppModule {
         okHttpClient: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.1.4:8000/")
+            .baseUrl("http://10.0.2.2:8000/")
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
@@ -82,7 +82,7 @@ object AppModule {
     @Named("without_interceptors")
     fun provideRetrofitWithoutInterceptors(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.1.4:8000/")
+            .baseUrl("http://10.0.2.2:8000/")
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
     }

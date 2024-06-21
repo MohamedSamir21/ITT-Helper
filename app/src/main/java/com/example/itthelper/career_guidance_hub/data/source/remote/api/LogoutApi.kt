@@ -1,6 +1,7 @@
-package com.example.itthelper.career_guidance_hub.data.source.remote
+package com.example.itthelper.career_guidance_hub.data.source.remote.api
 
 import com.example.itthelper.core.data.source.remote.RefreshRequest
+import com.example.itthelper.core.data.source.remote.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -10,5 +11,3 @@ interface LogoutApi {
         @Body refresh: RefreshRequest
     ): Response
 }
-
-data class Response(val response: String)

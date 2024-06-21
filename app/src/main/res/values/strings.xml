@@ -180,7 +180,7 @@
     <string name="we_help_you_to_start_your_career">We help you to start your career</string>
     <string name="path_image">Path Image</string>
 
-    <!--  Error  -->
+<!--  Error  -->
     <string name="your_access_has_expired">Your access has expired. Please go to login again</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="the_request_timed_out">The request timed out</string>
@@ -191,4 +191,6 @@
     <string name="success">Success</string>
     <string name="failure">Failure</string>
 
+<!--  Chat Bot  -->
+    <string name="chat_service">Chat Service</string>
 </resources>

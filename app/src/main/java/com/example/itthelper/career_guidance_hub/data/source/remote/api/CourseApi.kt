@@ -1,4 +1,4 @@
-package com.example.itthelper.career_guidance_hub.data.source.remote
+package com.example.itthelper.career_guidance_hub.data.source.remote.api
 
 import com.example.itthelper.career_guidance_hub.data.model.CourseEntity
 import retrofit2.http.GET

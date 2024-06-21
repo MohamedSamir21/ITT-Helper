@@ -46,7 +46,7 @@ fun CareerHubScaffold(
         floatingActionButton = {
             if (viewModel.showFABValue)
                 FloatingActionButton(
-                    onClick = { /*TODO*/ }
+                    onClick = { navController.navigate(Screen.ChatBot.route) }
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.bot),

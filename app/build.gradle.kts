@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -20,6 +22,16 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val file = project.rootProject.file("apikey.properties")
+        val properties = Properties()
+        properties.load(file.inputStream())
+        val apiKey = properties.getProperty("VOICE_FLOW_API_KEY") ?: ""
+        buildConfigField(
+            type = "String",
+            name = "VOICE_FLOW_API_KEY",
+            value = apiKey
+        )
     }
 
     buildTypes {
@@ -40,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -91,6 +104,9 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha06")
     implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
+
+    // GSON
+    implementation("com.google.code.gson:gson:2.11.0")
 }
 
 // Allow references to generated code

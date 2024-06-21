@@ -7,6 +7,7 @@ import com.example.itthelper.career_guidance_hub.data.repository.EventRepository
 import com.example.itthelper.career_guidance_hub.data.repository.FeedbackRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.repository.LogoutRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.repository.TrainingProgramRepositoryImpl
+import com.example.itthelper.career_guidance_hub.data.repository.VoiceFlowRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.CareerPathApi
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.ContactUsApi
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.CourseApi
@@ -14,7 +15,9 @@ import com.example.itthelper.career_guidance_hub.data.source.remote.api.EventApi
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.FeedbackApi
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.LogoutApi
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.TrainingProgramApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.VoiceFlowApi
 import com.example.itthelper.career_guidance_hub.domain.repository.CareerPathRepository
+import com.example.itthelper.career_guidance_hub.domain.repository.ChatBotRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.ContactUsRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.CourseRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.EventRepository
@@ -28,6 +31,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -144,5 +149,27 @@ object CareerHubModule {
             feedbackApi,
             dataStore
         )
+    }
+
+    @Singleton
+    @Provides
+    @Named("voice_flow_base_url")
+    fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://general-runtime.voiceflow.com/")
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideVoiceFlowApi(@Named("voice_flow_base_url") retrofit: Retrofit): VoiceFlowApi {
+        return retrofit.create(VoiceFlowApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChatBotRepository(voiceFlowApi: VoiceFlowApi): ChatBotRepository {
+        return VoiceFlowRepositoryImpl(voiceFlowApi)
     }
 }
