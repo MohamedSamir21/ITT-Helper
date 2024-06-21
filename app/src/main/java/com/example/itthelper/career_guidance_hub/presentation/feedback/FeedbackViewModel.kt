@@ -1,16 +1,33 @@
 package com.example.itthelper.career_guidance_hub.presentation.feedback
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.itthelper.R
+import com.example.itthelper.career_guidance_hub.domain.model.Feedback
+import com.example.itthelper.career_guidance_hub.domain.usecase.SendFeedbackMessageUseCase
+import com.example.itthelper.career_guidance_hub.presentation.util.UiText
+import com.example.itthelper.career_guidance_hub.presentation.util.asUiText
+import com.example.itthelper.core.domain.error.DataError
+import com.example.itthelper.core.domain.result.Result
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FeedbackViewModel : ViewModel() {
+@HiltViewModel
+class FeedbackViewModel @Inject constructor(
+    private val sendFeedbackMessageUseCase: SendFeedbackMessageUseCase
+) : ViewModel() {
     private val _state = mutableStateOf(
         FeedbackScreenState()
     )
     val state: State<FeedbackScreenState>
         get() = _state
+    private val unauthorizedChannel = Channel<FeedbackScreenEvent.Unauthorized>()
+    val unauthorizedResult = unauthorizedChannel.receiveAsFlow()
 
     fun onEvent(event: FeedbackScreenEvent) {
         val state = state.value
@@ -81,7 +98,6 @@ class FeedbackViewModel : ViewModel() {
                         selectedDate = event.value
                     )
                 )
-                Log.d("FeedbackViewModel", state.datePickerState.selectedDate)
             }
 
             is FeedbackScreenEvent.ToggleDatePicker -> {
@@ -90,7 +106,6 @@ class FeedbackViewModel : ViewModel() {
                         showDatePicker = datePickerState.showDatePicker.not()
                     )
                 )
-                Log.d("FeedbackViewModel", state.datePickerState.showDatePicker.toString())
             }
 
             FeedbackScreenEvent.Reset -> {
@@ -98,12 +113,57 @@ class FeedbackViewModel : ViewModel() {
             }
 
             FeedbackScreenEvent.Send -> {
-
+                sendData()
             }
+
+            FeedbackScreenEvent.HideResultDialog -> {
+                _state.value = state.copy(
+                    showResultDialog = false
+                )
+            }
+
+            else -> Unit
         }
     }
 
     private fun resetEnteredData() {
         _state.value = FeedbackScreenState()
+    }
+
+    private fun sendData() {
+        viewModelScope.launch {
+            _state.value = state.value.copy(
+                isSending = true
+            )
+            val result = sendFeedbackMessageUseCase(
+                Feedback(
+                    state.value.message
+                )
+            )
+            when (result) {
+                is Result.Success -> {
+                    result.data.collect {
+                        _state.value = state.value.copy(
+                            dialogTitle = UiText.StringResource(R.string.success),
+                            dialogBody = UiText.DynamicString(it),
+                            showResultDialog = true,
+                            isSending = false
+                        )
+                    }
+                }
+
+                is Result.Failure -> {
+                    if (result.error == DataError.Network.UNAUTHORIZED) {
+                        unauthorizedChannel.send(FeedbackScreenEvent.Unauthorized(result.error.asUiText()))
+                    }
+                    _state.value = state.value.copy(
+                        dialogTitle = UiText.StringResource(R.string.failure),
+                        dialogBody = result.error.asUiText(),
+                        showResultDialog = true,
+                        isSending = false
+                    )
+                }
+            }
+        }
     }
 }

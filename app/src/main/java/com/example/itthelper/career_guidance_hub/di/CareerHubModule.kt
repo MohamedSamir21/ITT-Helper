@@ -4,18 +4,21 @@ import com.example.itthelper.career_guidance_hub.data.repository.CareerPathRepos
 import com.example.itthelper.career_guidance_hub.data.repository.ContactUsRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.repository.CourseRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.repository.EventRepositoryImpl
+import com.example.itthelper.career_guidance_hub.data.repository.FeedbackRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.repository.LogoutRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.repository.TrainingProgramRepositoryImpl
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.CareerPathApi
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.ContactUsApi
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.CourseApi
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.EventApi
+import com.example.itthelper.career_guidance_hub.data.source.remote.api.FeedbackApi
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.LogoutApi
 import com.example.itthelper.career_guidance_hub.data.source.remote.api.TrainingProgramApi
 import com.example.itthelper.career_guidance_hub.domain.repository.CareerPathRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.ContactUsRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.CourseRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.EventRepository
+import com.example.itthelper.career_guidance_hub.domain.repository.FeedbackRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.LogoutRepository
 import com.example.itthelper.career_guidance_hub.domain.repository.TrainingProgramRepository
 import com.example.itthelper.core.data.repository.TokenRepository
@@ -125,4 +128,21 @@ object CareerHubModule {
         )
     }
 
+    @Provides
+    @Singleton
+    fun providesFeedbackApi(retrofit: Retrofit): FeedbackApi {
+        return retrofit.create(FeedbackApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesFeedbackRepository(
+        feedbackApi: FeedbackApi,
+        dataStore: DataStoreRepository
+    ): FeedbackRepository {
+        return FeedbackRepositoryImpl(
+            feedbackApi,
+            dataStore
+        )
+    }
 }

@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
@@ -30,6 +31,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,19 +52,25 @@ import com.example.itthelper.career_guidance_hub.presentation.components.EmailTe
 import com.example.itthelper.career_guidance_hub.presentation.components.MessageTextField
 import com.example.itthelper.career_guidance_hub.presentation.components.NameTextField
 import com.example.itthelper.career_guidance_hub.presentation.components.PhoneTextField
+import com.example.itthelper.career_guidance_hub.presentation.components.ResultDialog
 import com.example.itthelper.career_guidance_hub.presentation.components.SendButton
+import com.example.itthelper.career_guidance_hub.presentation.navigation.Screen
 import com.example.itthelper.career_guidance_hub.presentation.util.DateUtil
+import com.example.itthelper.career_guidance_hub.presentation.util.UiText
 import com.example.itthelper.core.ui.theme.ITTHelperTheme
 
 @Composable
 fun FeedbackScreen(
     navController: NavController,
-    feedbackViewModel: FeedbackViewModel
+    feedbackViewModel: FeedbackViewModel,
+    onUnauthorized: (UiText) -> Unit
 ) {
     val viewModel: FeedbackViewModel = remember {
         feedbackViewModel
     }
-
+    viewModel.unauthorizedResult.collectAsState(initial = null).value?.let {
+        onUnauthorized(it.message)
+    }
     FeedbackContent(
         navController = navController,
         state = viewModel.state.value,
@@ -85,6 +93,28 @@ fun FeedbackContent(
         HorizontalDivider(modifier = Modifier.padding(20.dp))
         FeedbackMessage()
         FeedbackForm(state, onEvent)
+
+        if (state.showResultDialog) {
+            val messageTitle = state.dialogTitle?.asString()
+            val messageBody = state.dialogBody.asString()
+            messageTitle?.let {
+                ResultDialog(
+                    messageTitle = it,
+                    messageBody = messageBody,
+                    isSuccessful = it == stringResource(id = R.string.success),
+                    contentDescription = messageBody,
+                    onConfirmedClicked = {
+                        navController.popBackStack(Screen.Home.route, false)
+                        onEvent(FeedbackScreenEvent.HideResultDialog)
+                    },
+                    onDismissedClicked = {
+                        onEvent(FeedbackScreenEvent.HideResultDialog)
+                    }
+                ) {
+                    onEvent(FeedbackScreenEvent.HideResultDialog)
+                }
+            }
+        }
     }
 }
 
@@ -208,13 +238,25 @@ private fun FeedbackForm(
                     FeedbackScreenEvent.Reset
                 )
             }
-            SendButton(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 5.dp)
-            ) {
-
+            if (state.isSending) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                SendButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 5.dp)
+                ) {
+                    onEvent(FeedbackScreenEvent.Send)
+                }
             }
+
         }
     }
 }

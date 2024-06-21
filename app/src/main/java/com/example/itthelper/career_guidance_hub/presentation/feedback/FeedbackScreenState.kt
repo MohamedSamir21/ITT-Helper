@@ -1,6 +1,7 @@
 package com.example.itthelper.career_guidance_hub.presentation.feedback
 
 import androidx.annotation.StringRes
+import com.example.itthelper.career_guidance_hub.presentation.util.UiText
 
 data class FeedbackScreenState(
     val name: String = "",
@@ -13,7 +14,11 @@ data class FeedbackScreenState(
     val typeDropdownMenuState: TypeDropdownMenuState = TypeDropdownMenuState(
         items = TypeMenuItems.items
     ),
-    val datePickerState: DatePickerState = DatePickerState()
+    val datePickerState: DatePickerState = DatePickerState(),
+    val dialogTitle: UiText? = null,
+    var dialogBody: UiText = UiText.DynamicString(""),
+    var showResultDialog: Boolean = false,
+    var isSending: Boolean = false
 )
 
 data class PositionDropdownMenuState(
